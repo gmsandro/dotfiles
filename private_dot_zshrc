@@ -107,6 +107,14 @@ ZSH_THEME="agnoster"
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+alias ys="yabai --start-service"
+alias yr="yabai --restart-service"
+alias yk="yabai --stop-service"
+
+alias sks="skhd --start-service"
+alias skr="skhd --restart-service"
+alias skk="skhd --stop-service"
+
 export GPG_TTY=$(tty)
 
 export DENO_INSTALL="/Users/sandro/.deno"
@@ -146,3 +154,4 @@ fi
 
 eval "$(starship init zsh)"
 
+export BAT_THEME="ansi"

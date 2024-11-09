@@ -155,3 +155,5 @@ fi
 eval "$(starship init zsh)"
 
 export BAT_THEME="ansi"
+
+bindkey -v

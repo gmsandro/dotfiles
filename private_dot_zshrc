@@ -107,13 +107,15 @@ ZSH_THEME="agnoster"
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-alias ys="yabai --start-service"
-alias yr="yabai --restart-service"
-alias yk="yabai --stop-service"
+# alias ys="yabai --start-service"
+# alias yr="yabai --restart-service"
+# alias yk="yabai --stop-service"
+#
+# alias sks="skhd --start-service"
+# alias skr="skhd --restart-service"
+# alias skk="skhd --stop-service"
 
-alias sks="skhd --start-service"
-alias skr="skhd --restart-service"
-alias skk="skhd --stop-service"
+alias vim="nvim"
 
 export GPG_TTY=$(tty)
 
@@ -121,8 +123,8 @@ export DENO_INSTALL="/Users/sandro/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
 
 # fnm
-export PATH="/Users/sandro/Library/Application Support/fnm:$PATH"
-eval "`fnm env`"
+# export PATH="/Users/sandro/Library/Application Support/fnm:$PATH"
+# eval "`fnm env`"
 
 
 # Go

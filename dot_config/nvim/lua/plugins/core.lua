@@ -8,15 +8,12 @@ return {
       },
     },
   },
-  {
-    "sandro-sh/oldworld.nvim",
-    lazy = false,
-    priority = 1000,
-  },
+  { "gmsandro/oldworld.nvim" },
+  { "rose-pine/neovim" },
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "oldworld",
+      colorscheme = "rose-pine",
     },
   },
   -- {

@@ -8,7 +8,7 @@ local opt = vim.opt
 -- You have to turn this one on :)
 opt.inccommand = "split"
 
--- Best search settings :)
+-- search settings
 opt.smartcase = true
 opt.ignorecase = true
 

@@ -151,7 +151,8 @@ export BAT_THEME="ansi"
 bindkey -v
 
 # fnm
-FNM_PATH="/Users/sandro/Library/Application Support/fnm"
+# FNM_PATH="/Users/sandro/Library/Application Support/fnm"
+FNM_PATH="/Users/sandro/.local/share/fnm"
 if [ -d "$FNM_PATH" ]; then
   export PATH="/Users/sandro/Library/Application Support/fnm:$PATH"
   eval "`fnm env`"

@@ -1,5 +1,5 @@
--- disable dashboard
 return {
+  -- disable dashboard
   { "nvimdev/dashboard-nvim", enabled = false },
   { "folke/persistence.nvim", enabled = false },
   { "nvim-lualine/lualine.nvim", enabled = false },

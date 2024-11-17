@@ -11,6 +11,8 @@ alias vim="nvim"
 
 export GPG_TTY=$(tty)
 
+export PATH="$HOME/opt:$PATH"
+
 # Go
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin

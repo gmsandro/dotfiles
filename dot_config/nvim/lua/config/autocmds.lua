@@ -15,3 +15,19 @@ vim.api.nvim_create_autocmd("TermOpen", {
     vim.bo.filetype = "terminal"
   end,
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "lua", "javascript", "typescript", "json", "yaml" },
+  callback = function()
+    set.shiftwidth = 2
+    set.tabstop = 2
+  end,
+})
+
+-- vim.api.nvim_create_autocmd("FileType", {
+--   pattern = { "python", "rust", "go" },
+--   callback = function()
+--     set.shiftwidth = 4
+--     set.tabstop = 4
+--   end,
+-- })

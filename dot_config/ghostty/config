@@ -2,3 +2,7 @@ theme = rose-pine
 font-family = "JetBrainsMono Nerd Font Mono"
 font-size = 16
 macos-option-as-alt = true
+macos-window-shadow = false
+
+# either tabs or transparent
+macos-titlebar-style = tabs

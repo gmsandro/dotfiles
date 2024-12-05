@@ -21,6 +21,10 @@ export PATH=$PATH:$GOPATH/bin
 export DENO_INSTALL="/Users/sandro/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
 
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
 # bun completions
 [ -s "/Users/sandro/.bun/_bun" ] && source "/Users/sandro/.bun/_bun"
 
@@ -31,19 +35,13 @@ if [ -d "$FNM_PATH" ]; then
     eval "`fnm env`"
 fi
 
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-
 # starship
 eval "$(starship init zsh)"
 
 export BAT_THEME="ansi"
 
-# enable vim mode
-bindkey -v
-
-. "$HOME/.cargo/env"            # For sh/bash/zsh/ash/dash/pdksh
+# cargo
+. "$HOME/.cargo/env"
 
 # BEGIN opam configuration
 # This is useful if you're using opam as it adds:
@@ -51,3 +49,6 @@ bindkey -v
 #   - auto-completion for the opam binary
 [[ ! -r '/Users/sandro/.opam/opam-init/init.zsh' ]] || source '/Users/sandro/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
 # END opam configuration
+
+# enable vim mode
+bindkey -v

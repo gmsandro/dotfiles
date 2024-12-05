@@ -8,6 +8,7 @@ return {
   },
   { "gmsandro/oldworld.nvim" },
   { "rose-pine/neovim" },
+  { "gmsandro/kanagawa.nvim" },
   {
     "LazyVim/LazyVim",
     opts = {

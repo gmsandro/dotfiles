@@ -1,9 +1,17 @@
+-- Disabling some lazyvim defaults
 return {
   -- disable dashboard
-  { "nvimdev/dashboard-nvim", enabled = false },
   { "folke/persistence.nvim", enabled = false },
   { "nvim-lualine/lualine.nvim", enabled = false },
   -- { "akinsho/bufferline.nvim", enabled = false },
+  {
+    "folke/snacks.nvim",
+    opts = {
+      dashboard = {
+        enabled = false,
+      },
+    },
+  },
   {
     "folke/noice.nvim",
     opts = {

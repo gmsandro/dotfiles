@@ -30,7 +30,7 @@ require("lazy").setup({
     version = false, -- always use the latest git commit
     -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
-  install = { colorscheme = {} },
+  install = { colorscheme = { "tokyonight", "habamax" } },
   checker = {
     enabled = true, -- check for plugin updates periodically
     notify = false, -- notify on update
@@ -51,28 +51,3 @@ require("lazy").setup({
     },
   },
 })
-
--- -- Global variable to keep track of the toggle state
--- _G.copilot_suggestions_enabled = true
---
--- -- Function to toggle Copilot suggestions
--- function _G.toggle_copilot_suggestions()
---   if _G.copilot_suggestions_enabled then
---     -- Disable Copilot suggestions
---     vim.api.nvim_create_autocmd("BufEnter", {
---       pattern = "*",
---       callback = function()
---         require("copilot.client").buf_detach()
---       end,
---     })
---     print("Copilot suggestions disabled")
---   else
---     -- Enable Copilot suggestions
---     vim.api.nvim_clear_autocmds({ event = "BufEnter" })
---     print("Copilot suggestions enabled")
---   end
---   _G.copilot_suggestions_enabled = not _G.copilot_suggestions_enabled
--- end
---
--- -- Bind the toggle function to a Neovim command
--- vim.api.nvim_create_user_command("ToggleCopilot", _G.toggle_copilot_suggestions, {})

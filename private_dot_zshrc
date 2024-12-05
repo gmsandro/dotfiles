@@ -35,9 +35,6 @@ fi
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-# ocaml
-# [[ ! -r '/Users/sandro/.opam/opam-init/init.zsh' ]] || source '/Users/sandro/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
-
 # starship
 eval "$(starship init zsh)"
 
@@ -45,3 +42,12 @@ export BAT_THEME="ansi"
 
 # enable vim mode
 bindkey -v
+
+. "$HOME/.cargo/env"            # For sh/bash/zsh/ash/dash/pdksh
+
+# BEGIN opam configuration
+# This is useful if you're using opam as it adds:
+#   - the correct directories to the PATH
+#   - auto-completion for the opam binary
+[[ ! -r '/Users/sandro/.opam/opam-init/init.zsh' ]] || source '/Users/sandro/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
+# END opam configuration

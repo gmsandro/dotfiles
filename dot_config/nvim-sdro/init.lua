@@ -19,9 +19,10 @@ vim.opt.mouse = 'a'
 vim.opt.showmode = false
 
 --  See `:help 'clipboard'`
-vim.schedule(function()
-  vim.opt.clipboard = 'unnamedplus'
-end)
+-- vim.schedule(function()
+--   vim.opt.clipboard = 'unnamedplus'
+-- end)
+vim.opt.clipboard = 'unnamedplus'
 
 vim.opt.breakindent = true
 
@@ -259,7 +260,6 @@ require('lazy').setup {
       -- Automatically install LSPs and related tools to stdpath for Neovim
       { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
       'williamboman/mason-lspconfig.nvim',
-      'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       { 'j-hui/fidget.nvim', opts = {} },
 
@@ -308,6 +308,35 @@ require('lazy').setup {
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+
+          -- custom stuff start
+          map('<c-k>', vim.lsp.buf.signature_help, 'Signature Help', { 'i' })
+
+          --   { "<leader>cl", "<cmd>LspInfo<cr>", desc = "Lsp Info" },
+          --   { "gd", vim.lsp.buf.definition, desc = "Goto Definition", has = "definition" },
+          --   { "gr", vim.lsp.buf.references, desc = "References", nowait = true },
+          --   { "gI", vim.lsp.buf.implementation, desc = "Goto Implementation" },
+          --   { "gy", vim.lsp.buf.type_definition, desc = "Goto T[y]pe Definition" },
+          --   { "gD", vim.lsp.buf.declaration, desc = "Goto Declaration" },
+          --   { "K", function() return vim.lsp.buf.hover() end, desc = "Hover" },
+          --   { "gK", function() return vim.lsp.buf.signature_help() end, desc = "Signature Help", has = "signatureHelp" },
+          --   { "<c-k>", function() return vim.lsp.buf.signature_help() end, mode = "i", desc = "Signature Help", has = "signatureHelp" },
+          --   { "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" }, has = "codeAction" },
+          --   { "<leader>cc", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" }, has = "codeLens" },
+          --   { "<leader>cC", vim.lsp.codelens.refresh, desc = "Refresh & Display Codelens", mode = { "n" }, has = "codeLens" },
+          --   { "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename File", mode ={"n"}, has = { "workspace/didRenameFiles", "workspace/willRenameFiles" } },
+          --   { "<leader>cr", vim.lsp.buf.rename, desc = "Rename", has = "rename" },
+          --   { "<leader>cA", LazyVim.lsp.action.source, desc = "Source Action", has = "codeAction" },
+          --   { "]]", function() Snacks.words.jump(vim.v.count1) end, has = "documentHighlight",
+          --     desc = "Next Reference", cond = function() return Snacks.words.is_enabled() end },
+          --   { "[[", function() Snacks.words.jump(-vim.v.count1) end, has = "documentHighlight",
+          --     desc = "Prev Reference", cond = function() return Snacks.words.is_enabled() end },
+          --   { "<a-n>", function() Snacks.words.jump(vim.v.count1, true) end, has = "documentHighlight",
+          --     desc = "Next Reference", cond = function() return Snacks.words.is_enabled() end },
+          --   { "<a-p>", function() Snacks.words.jump(-vim.v.count1, true) end, has = "documentHighlight",
+          --     desc = "Prev Reference", cond = function() return Snacks.words.is_enabled() end },
+
+          -- custom stuff end
 
           --    See `:help CursorHold` for information about when this is executed
           --
@@ -406,7 +435,6 @@ require('lazy').setup {
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
       })
-      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
         handlers = {
@@ -638,8 +666,7 @@ require('lazy').setup {
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
       ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
-      -- Autoinstall languages that are not installed
-      auto_install = true,
+      auto_install = false,
       highlight = {
         enable = true,
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.

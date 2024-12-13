@@ -15,32 +15,6 @@ return {
       colorscheme = "rose-pine",
     },
   },
-  -- {
-  --   "supermaven-inc/supermaven-nvim",
-  --   config = function()
-  --     require("supermaven-nvim").setup({})
-  --   end,
-  -- },
-  -- {
-  --   "nvim-cmp",
-  --   dependencies = {
-  --     "supermaven-inc/supermaven-nvim",
-  --     -- build = ":SupermavenUseFree", -- remove this line if you are using pro
-  --     opts = {},
-  --   },
-  --   ---@param opts cmp.ConfigSchema
-  --   opts = function(_, opts)
-  --     table.insert(opts.sources, 1, {
-  --       name = "supermaven",
-  --       group_index = 1,
-  --       priority = 100,
-  --     })
-  --   end,
-  -- },
-  {
-    "folke/zen-mode.nvim",
-    opts = {},
-  },
   {
     "stevearc/oil.nvim",
     ---@module 'oil'
@@ -84,18 +58,5 @@ return {
         model = "claude-3.5-sonnet",
       }
     end,
-  },
-  {
-    "NeogitOrg/neogit",
-    dependencies = {
-      "nvim-lua/plenary.nvim", -- required
-      "sindrets/diffview.nvim", -- optional - Diff integration
-
-      -- Only one of these is needed.
-      -- "nvim-telescope/telescope.nvim", -- optional
-      -- "ibhagwan/fzf-lua", -- optional
-      -- "echasnovski/mini.pick", -- optional
-    },
-    config = true,
   },
 }

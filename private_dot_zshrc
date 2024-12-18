@@ -51,4 +51,4 @@ export BAT_THEME="ansi"
 # END opam configuration
 
 # enable vim mode
-bindkey -v
+# bindkey -v

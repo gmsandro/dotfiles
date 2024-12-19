@@ -3,17 +3,9 @@ return {
   -- disable dashboard
   { "folke/persistence.nvim", enabled = false },
   { "nvim-lualine/lualine.nvim", enabled = false },
-  -- { "akinsho/bufferline.nvim", enabled = false },
-  {
-    "folke/snacks.nvim",
-    opts = {
-      dashboard = {
-        enabled = false,
-      },
-    },
-  },
   {
     "folke/noice.nvim",
+    enabled = false,
     opts = {
       lsp = {
         override = {
@@ -43,6 +35,16 @@ return {
         command_palette = false,
         long_message_to_split = true,
       },
+    },
+  },
+  {
+    "folke/snacks.nvim",
+    priority = 999,
+    lazy = false,
+    opts = {
+      scroll = { enabled = false },
+      statuscolumn = { enabled = false },
+      dashboard = { enabled = false },
     },
   },
 }

@@ -5,9 +5,12 @@ return {
     config = function()
       local root = require 'custom.root'
 
-      require('fzf-lua').setup { winopts = {
-        border = 'single',
-      } }
+      require('fzf-lua').setup {
+        hls = { border = 'FloatBorder' },
+        winopts = {
+          border = 'single',
+        },
+      }
 
       vim.keymap.set('n', '<leader><leader>', function()
         require('fzf-lua').files {

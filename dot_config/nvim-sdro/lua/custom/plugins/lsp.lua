@@ -1,59 +1,4 @@
----@diagnostic disable: missing-fields
 return {
-  {
-    'saghen/blink.cmp',
-    lazy = false, -- lazy loading handled internally
-    dependencies = 'rafamadriz/friendly-snippets',
-
-    version = 'v0.*',
-
-    ---@module 'blink.cmp'
-    ---@type blink.cmp.Config
-    opts = {
-      keymap = { preset = 'default' },
-
-      appearance = {
-        use_nvim_cmp_as_default = false,
-        nerd_font_variant = 'mono',
-      },
-
-      completion = {
-        accept = {
-          -- experimental auto-brackets support
-          auto_brackets = {
-            enabled = true,
-          },
-        },
-        menu = {
-          draw = {
-            treesitter = { 'lsp' },
-          },
-        },
-        documentation = {
-          auto_show = true,
-          auto_show_delay_ms = 200,
-        },
-        ghost_text = {
-          enabled = vim.g.ai_cmp,
-        },
-      },
-
-      sources = {
-        default = { 'lsp', 'path', 'snippets', 'buffer' },
-        -- optionally disable cmdline completions
-        -- cmdline = {},
-      },
-
-      signature = { enabled = true },
-    },
-    opts_extend = {
-      'sources.default',
-      -- test
-      'sources.completion.enabled_providers',
-      'sources.compat',
-    },
-  },
-
   -- LSP Plugins
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
@@ -124,14 +69,14 @@ return {
       local lspconfig = require 'lspconfig'
 
       -- Change diagnostic symbols in the sign column (gutter)
-      if vim.g.have_nerd_font then
-        local signs = { ERROR = '', WARN = '', INFO = '', HINT = '' }
-        local diagnostic_signs = {}
-        for type, icon in pairs(signs) do
-          diagnostic_signs[vim.diagnostic.severity[type]] = icon
-        end
-        vim.diagnostic.config { signs = { text = diagnostic_signs } }
-      end
+      -- if vim.g.have_nerd_font then
+      --   local signs = { ERROR = '', WARN = '', INFO = '', HINT = '' }
+      --   local diagnostic_signs = {}
+      --   for type, icon in pairs(signs) do
+      --     diagnostic_signs[vim.diagnostic.severity[type]] = icon
+      --   end
+      --   vim.diagnostic.config { signs = { text = diagnostic_signs } }
+      -- end
 
       require('mason').setup()
 

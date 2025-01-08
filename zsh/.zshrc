@@ -8,6 +8,7 @@
 
 # alias
 alias vim="nvim"
+alias ls='ls --color=auto'
 
 export GPG_TTY=$(tty)
 

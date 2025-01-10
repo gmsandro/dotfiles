@@ -63,7 +63,7 @@ return {
         },
         marksman = {},
       },
-      ---@type table<string, fun(server:string, opts:_.lspconfig.options):boolean?>
+      ---@type table<string, fun(server:string, opts:lspconfig.options):boolean?>
       setup = {
         rust_analyzer = function()
           return true
@@ -73,41 +73,39 @@ return {
     },
     config = function(_, opts)
       local lspconfig = require 'lspconfig'
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      local has_blink, blink = pcall(require, 'blink-cmp')
+      if has_blink then
+        capabilities = blink.get_lsp_capabilities(capabilities)
+      end
 
       require('mason').setup()
 
-      local ensure_installed = vim.tbl_keys(opts.servers or {})
-      vim.list_extend(ensure_installed, {
-        'stylua', -- Used to format Lua code
-      })
-
       require('mason-lspconfig').setup_handlers {
         function(server_name)
-          if server_name ~= "rust_analyzer" then
-            local server_opts = opts.servers[server_name] or {}
-            server_opts.capabilities = require('blink-cmp').get_lsp_capabilities(server_opts.capabilities)
+          local server_opts = vim.tbl_deep_extend("force", {
+            capabilities = vim.deepcopy(capabilities),
+          }, opts.servers[server_name] or {})
 
-            -- Check if there's a custom setup function
-            if opts.setup[server_name] then
-              if opts.setup[server_name](server_name, server_opts) then
-                return -- don't continue if the setup function returns true
-              end
-            end
-
-            lspconfig[server_name].setup(server_opts)
+          if server_opts.enabled == false then
+            return
           end
+
+          -- Check for specific server setup
+          if opts.setup[server_name] then
+            if opts.setup[server_name](server_name, server_opts) then
+              return
+            end
+            -- Check for wildcard setup
+          elseif opts.setup["*"] then
+            if opts.setup["*"](server_name, server_opts) then
+              return
+            end
+          end
+
+          lspconfig[server_name].setup(server_opts)
         end,
       }
-
-      -- require('mason-lspconfig').setup_handlers {
-      --   function(server_name)
-      --     if server_name ~= "rust_analyzer" then
-      --       local config = opts.servers[server_name] or {}
-      --       config.capabilities = require('blink-cmp').get_lsp_capabilities(config.capabilities)
-      --       lspconfig[server_name].setup(config)
-      --     end
-      --   end,
-      -- }
     end,
   },
 }

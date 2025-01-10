@@ -32,6 +32,7 @@ vim.keymap.set('n', 'gcO', 'O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>', { desc = 
 vim.keymap.set('n', '<leader>bo', function()
   Snacks.bufdelete.other()
 end, { desc = 'Delete Other Buffers' })
+vim.keymap.set('n', '<leader>bn', '<cmd>enew<cr>', { desc = 'New Buffer' })
 
 -- diagnostic
 local diagnostic_goto = function(next, severity)
@@ -48,6 +49,46 @@ vim.keymap.set('n', ']e', diagnostic_goto(true, 'ERROR'), { desc = 'Next Error' 
 vim.keymap.set('n', '[e', diagnostic_goto(false, 'ERROR'), { desc = 'Prev Error' })
 vim.keymap.set('n', ']w', diagnostic_goto(true, 'WARN'), { desc = 'Next Warning' })
 vim.keymap.set('n', '[w', diagnostic_goto(false, 'WARN'), { desc = 'Prev Warning' })
+
+
+-- lsp
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { noremap = true, silent = true, desc = 'Go to Definition' })
+vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { noremap = true, silent = true, desc = 'Go to Declaration' })
+vim.keymap.set('n', 'gI', vim.lsp.buf.implementation,
+  { noremap = true, silent = true, desc = 'Go to Implementation' })
+vim.keymap.set('n', 'gy', vim.lsp.buf.type_definition,
+  { noremap = true, silent = true, desc = 'Go to T[y]pe Definition' })
+vim.keymap.set('n', 'gK', vim.lsp.buf.signature_help, { noremap = true, silent = true, desc = 'Signature Help' })
+vim.keymap.set('i', '<c-k>', vim.lsp.buf.signature_help, { noremap = true, silent = true, desc = 'Signature Help' })
+
+vim.keymap.set('n', 'gK', function()
+  return vim.lsp.buf.signature_help()
+end, { desc = 'Signature Help' })
+vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, { desc = 'Code Action' })
+vim.keymap.set({ 'n', 'v' }, '<leader>cc', vim.lsp.codelens.run, { desc = 'Run Codelens' })
+vim.keymap.set('n', '<leader>cC', vim.lsp.codelens.refresh, { desc = 'Refresh & Display Codelens' })
+vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, { desc = 'Rename' })
+vim.keymap.set('n', ']]', function()
+  Snacks.words.jump(vim.v.count1)
+end, {
+  desc = 'Next Reference',
+})
+vim.keymap.set('n', '[[', function()
+  Snacks.words.jump(-vim.v.count1)
+end, {
+  desc = 'Prev Reference',
+})
+vim.keymap.set('n', '<a-n>', function()
+  Snacks.words.jump(vim.v.count1, true)
+end, {
+  desc = 'Next Reference',
+})
+vim.keymap.set('n', '<a-p>', function()
+  Snacks.words.jump(-vim.v.count1, true)
+end, {
+  desc = 'Prev Reference',
+})
+
 
 --keywordprg
 vim.keymap.set('n', '<leader>K', '<cmd>norm! K<cr>', { desc = 'Keywordprg' })

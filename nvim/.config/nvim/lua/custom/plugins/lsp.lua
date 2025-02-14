@@ -71,7 +71,12 @@ return {
       },
 
     },
+    ensure_installed = { "lua_ls", "stylua" },
     config = function(_, opts)
+      require('mason-lspconfig').setup({
+        ensure_installed = opts.ensure_installed or {},
+        automatic_installation = false,
+      })
       local lspconfig = require 'lspconfig'
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       local has_blink, blink = pcall(require, 'blink-cmp')

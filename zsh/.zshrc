@@ -53,3 +53,8 @@ export BAT_THEME="ansi"
 
 # enable vim mode
 # bindkey -v
+# if [ -n "$NVIM" ]; then
+#     bindkey -e  # Emacs mode when in Neovim
+# else
+#     bindkey -v  # Vim mode otherwise
+# fi

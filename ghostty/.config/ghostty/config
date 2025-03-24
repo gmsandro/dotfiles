@@ -6,3 +6,4 @@ macos-window-shadow = false
 
 # either tabs or transparent
 macos-titlebar-style = tabs
+macos-icon = "xray"

@@ -17,14 +17,11 @@ return {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
     dependencies = {
-      -- Automatically install LSPs and related tools to stdpath for Neovim
       { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
       'williamboman/mason-lspconfig.nvim',
 
-      { 'j-hui/fidget.nvim',       opts = {} },
+      { 'j-hui/fidget.nvim', opts = {} },
 
-      -- Allows extra capabilities provided by nvim-cmp
-      -- 'hrsh7th/cmp-nvim-lsp',
       'saghen/blink.cmp',
     },
     opts = {
@@ -64,16 +61,16 @@ return {
         marksman = {},
         vtsls = {
           filetypes = {
-            "javascript",
-            "javascriptreact",
-            "javascript.jsx",
-            "typescript",
-            "typescriptreact",
-            "typescript.tsx",
+            'javascript',
+            'javascriptreact',
+            'javascript.jsx',
+            'typescript',
+            'typescriptreact',
+            'typescript.tsx',
           },
           init_options = {
             preferences = {
-              importModuleSpecifierPreference = "non-relative",
+              importModuleSpecifierPreference = 'non-relative',
             },
           },
           settings = {
@@ -89,14 +86,14 @@ return {
               },
             },
             typescript = {
-              updateImportsOnFileMove = { enabled = "always" },
+              updateImportsOnFileMove = { enabled = 'always' },
               suggest = {
                 completeFunctionCalls = true,
               },
               inlayHints = {
                 enumMemberValues = { enabled = true },
                 functionLikeReturnTypes = { enabled = true },
-                parameterNames = { enabled = "literals" },
+                parameterNames = { enabled = 'literals' },
                 parameterTypes = { enabled = true },
                 propertyDeclarationTypes = { enabled = true },
                 variableTypes = { enabled = false },
@@ -105,62 +102,62 @@ return {
           },
           keys = {
             {
-              "gD",
+              'gD',
               function()
                 local params = vim.lsp.util.make_position_params()
-                vim.lsp.execute({
-                  command = "typescript.goToSourceDefinition",
+                vim.lsp.execute {
+                  command = 'typescript.goToSourceDefinition',
                   arguments = { params.textDocument.uri, params.position },
                   open = true,
-                })
+                }
               end,
-              desc = "Goto Source Definition",
+              desc = 'Goto Source Definition',
             },
             {
-              "gR",
+              'gR',
               function()
-                vim.lsp.execute({
-                  command = "typescript.findAllFileReferences",
+                vim.lsp.execute {
+                  command = 'typescript.findAllFileReferences',
                   arguments = { vim.uri_from_bufnr(0) },
                   open = true,
-                })
+                }
               end,
-              desc = "File References",
+              desc = 'File References',
             },
             {
-              "<leader>co",
+              '<leader>co',
               function()
-                vim.lsp.buf.code_action({ context = { only = { "source.organizeImports" } } })
+                vim.lsp.buf.code_action { context = { only = { 'source.organizeImports' } } }
               end,
-              desc = "Organize Imports",
+              desc = 'Organize Imports',
             },
             {
-              "<leader>cM",
+              '<leader>cM',
               function()
-                vim.lsp.buf.code_action({ context = { only = { "source.addMissingImports" } } })
+                vim.lsp.buf.code_action { context = { only = { 'source.addMissingImports' } } }
               end,
-              desc = "Add missing imports",
+              desc = 'Add missing imports',
             },
             {
-              "<leader>cu",
+              '<leader>cu',
               function()
-                vim.lsp.buf.code_action({ context = { only = { "source.removeUnused" } } })
+                vim.lsp.buf.code_action { context = { only = { 'source.removeUnused' } } }
               end,
-              desc = "Remove unused imports",
+              desc = 'Remove unused imports',
             },
             {
-              "<leader>cD",
+              '<leader>cD',
               function()
-                vim.lsp.buf.code_action({ context = { only = { "source.fixAll" } } })
+                vim.lsp.buf.code_action { context = { only = { 'source.fixAll' } } }
               end,
-              desc = "Fix all diagnostics",
+              desc = 'Fix all diagnostics',
             },
             {
-              "<leader>cV",
+              '<leader>cV',
               function()
-                vim.lsp.execute({ command = "typescript.selectTypeScriptVersion" })
+                vim.lsp.execute { command = 'typescript.selectTypeScriptVersion' }
               end,
-              desc = "Select TS workspace version",
+              desc = 'Select TS workspace version',
             },
           },
         },
@@ -171,26 +168,22 @@ return {
           return true
         end,
       },
-
     },
-    ensure_installed = { "lua_ls", "stylua" },
+    ensure_installed = { 'lua_ls', 'stylua' },
     config = function(_, opts)
-      require('mason-lspconfig').setup({
+      require('mason-lspconfig').setup {
         ensure_installed = opts.ensure_installed or {},
         automatic_installation = false,
-      })
+      }
       local lspconfig = require 'lspconfig'
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      local has_blink, blink = pcall(require, 'blink-cmp')
-      if has_blink then
-        capabilities = blink.get_lsp_capabilities(capabilities)
-      end
+      local blink = require 'blink-cmp'
+      local capabilities = blink.get_lsp_capabilities()
 
       require('mason').setup()
 
       require('mason-lspconfig').setup_handlers {
         function(server_name)
-          local server_opts = vim.tbl_deep_extend("force", {
+          local server_opts = vim.tbl_deep_extend('force', {
             capabilities = vim.deepcopy(capabilities),
           }, opts.servers[server_name] or {})
 
@@ -204,8 +197,8 @@ return {
               return
             end
             -- Check for wildcard setup
-          elseif opts.setup["*"] then
-            if opts.setup["*"](server_name, server_opts) then
+          elseif opts.setup['*'] then
+            if opts.setup['*'](server_name, server_opts) then
               return
             end
           end

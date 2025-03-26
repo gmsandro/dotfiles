@@ -3,6 +3,7 @@ return {
     'folke/snacks.nvim',
     priority = 1000,
     lazy = false,
+    ---@module 'snacks.nvim'
     ---@type snacks.Config
     opts = {
       bigfile = { enabled = true },
@@ -153,6 +154,32 @@ return {
           Snacks.toggle.treesitter():map '<leader>uT'
           Snacks.toggle.option('background', { off = 'light', on = 'dark', name = 'Dark Background' }):map '<leader>ub'
           Snacks.toggle.inlay_hints():map '<leader>uh'
+
+          -- Add virtual text diagnostic toggle
+          Snacks.toggle
+            .new({
+              name = 'Virtual Text',
+              get = function()
+                return vim.diagnostic.config().virtual_text ~= false
+              end,
+              set = function(state)
+                vim.diagnostic.config { virtual_text = state }
+              end,
+            })
+            :map '<leader>uv'
+
+          -- Add virtual lines diagnostic toggle
+          Snacks.toggle
+            .new({
+              name = 'Virtual Lines',
+              get = function()
+                return vim.diagnostic.config().virtual_lines ~= false
+              end,
+              set = function(state)
+                vim.diagnostic.config { virtual_lines = state }
+              end,
+            })
+            :map '<leader>uV'
         end,
       })
     end,

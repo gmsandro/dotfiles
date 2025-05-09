@@ -5,6 +5,7 @@ return {
     config = function()
       local root = require 'custom.root'
       local actions = require('fzf-lua').actions
+      require('fzf-lua').register_ui_select()
 
       require('fzf-lua').setup {
         hls = { border = 'FloatBorder' },

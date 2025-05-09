@@ -18,7 +18,6 @@ return {
     dependencies = { 'saghen/blink.cmp', 'rafamadriz/friendly-snippets' },
     ensure_installed = { 'lua_ls', 'stylua' },
     config = function(_, opts)
-      require('mason').setup()
       require('mason-lspconfig').setup {
         automatic_enable = {
           exclude = {
@@ -27,6 +26,8 @@ return {
           },
         },
       }
+
+      require('mason').setup()
 
       require('blink.cmp').setup {
         sources = {

@@ -8,7 +8,7 @@ return {
     build = 'make tiktoken', -- Only on MacOS or Linux
     opts = {
       -- See Configuration section for options
-      model = 'claude-3.5-sonnet',
+      model = 'gemini-2.5-pro',
     },
     keys = {
       { '<c-s>', '<CR>', ft = 'copilot-chat', desc = 'Submit Prompt', remap = true },

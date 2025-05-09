@@ -14,8 +14,13 @@ return {
   { 'mason-org/mason.nvim' },
   { 'mason-org/mason-lspconfig.nvim' },
   {
+    'saghen/blink.cmp',
+    dependencies = { 'rafamadriz/friendly-snippets' },
+    version = '1.*',
+  },
+  {
     'neovim/nvim-lspconfig',
-    dependencies = { 'saghen/blink.cmp', 'rafamadriz/friendly-snippets' },
+    dependencies = { 'saghen/blink.cmp' },
     ensure_installed = { 'lua_ls', 'stylua' },
     config = function(_, opts)
       require('mason-lspconfig').setup {
@@ -25,49 +30,10 @@ return {
             'ts_ls',
           },
         },
+        ensure_installed = opts.ensure_installed,
       }
 
       require('mason').setup()
-
-      require('blink.cmp').setup {
-        sources = {
-          default = { 'lazydev', 'lsp', 'path', 'snippets', 'buffer' },
-          providers = {
-            lazydev = {
-              name = 'LazyDev',
-              module = 'lazydev.integrations.blink',
-              -- make lazydev completions top priority (see `:h blink.cmp`)
-              score_offset = 100,
-            },
-          },
-        },
-        signature = {
-          enabled = true,
-          window = { border = 'none' },
-        },
-        completion = {
-          accept = {
-            -- experimental auto-brackets support
-            auto_brackets = {
-              enabled = true,
-            },
-          },
-          menu = {
-            border = 'none',
-            draw = {
-              treesitter = { 'lsp' },
-            },
-          },
-          documentation = {
-            window = { border = 'none' },
-            auto_show = true,
-            auto_show_delay_ms = 500,
-          },
-          ghost_text = {
-            enabled = false,
-          },
-        },
-      }
     end,
   },
 }

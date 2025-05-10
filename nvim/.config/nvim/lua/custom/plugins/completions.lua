@@ -56,7 +56,7 @@ return {
         documentation = {
           window = { border = 'none' },
           auto_show = false,
-          auto_show_delay_ms = 500,
+          auto_show_delay_ms = 0,
         },
         ghost_text = {
           enabled = false,

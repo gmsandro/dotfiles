@@ -42,10 +42,6 @@ return {
             goto_previous_end = { ['[F'] = '@function.outer', ['[C'] = '@class.outer', ['[A'] = '@parameter.inner' },
           },
         },
-        -- Enable autotag
-        autotag = {
-          enable = true,
-        },
       }
 
       local treesitter_parser_config = require('nvim-treesitter.parsers').get_parser_configs()
@@ -63,7 +59,8 @@ return {
   {
     'windwp/nvim-ts-autotag',
     event = 'BufReadPre',
-    opts = {},
-    config = true,
+    config = function()
+      require('nvim-ts-autotag').setup()
+    end,
   },
 }

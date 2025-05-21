@@ -51,6 +51,8 @@ export BAT_THEME="ansi"
 [[ ! -r '/Users/sandro/.opam/opam-init/init.zsh' ]] || source '/Users/sandro/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
 # END opam configuration
 
+source ~/.config/.env
+
 # enable vim mode
 # bindkey -v
 # if [ -n "$NVIM" ]; then

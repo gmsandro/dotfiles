@@ -36,6 +36,14 @@ return {
         desc = 'Quick Chat (CopilotChat)',
         mode = { 'n', 'v' },
       },
+      {
+        '<leader>am',
+        function()
+          require('CopilotChat').select_model()
+        end,
+        desc = 'Select Model (CopilotChat)',
+        mode = { 'n', 'v' },
+      },
       -- Show prompts actions with telescope
       -- { "<leader>ap", funciton() require('fzf-lua').pick("prompt") end, desc = "Prompt Actions (CopilotChat)", mode = { "n", "v" } },
     },

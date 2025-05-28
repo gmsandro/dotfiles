@@ -1,5 +1,7 @@
-theme = dark:Builtin Pastel Dark,light:Builtin Light
-font-family = "JetBrainsMono Nerd Font Mono"
+theme = dark:Aura,light:tokyonight-day
+font-family = "Berkeley Mono"
+font-family-italic = "Berkeley Mono Oblique"
+font-family = "JetBrainsMono Nerd Font"
 font-size = 16
 macos-option-as-alt = true
 macos-window-shadow = false

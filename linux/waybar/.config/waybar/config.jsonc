@@ -13,6 +13,7 @@
     "cpu",
     "memory",
     "tray",
+    "clock",
   ],
   "pulseaudio": {
     "format": "{icon} {volume}%",
@@ -30,7 +31,7 @@
     // "tooltip": false
   },
   "clock": {
-    "format": "{:%H:%M}"
+    "format": "{:%H:%M %d/%m/%Y}"
   },
   "workspace": {
     "format": "{name}",

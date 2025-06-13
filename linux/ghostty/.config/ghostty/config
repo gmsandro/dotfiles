@@ -1,0 +1,11 @@
+theme = Aura
+font-family = "Berkeley Mono"
+font-family-italic = "Berkeley Mono Oblique"
+font-family = "JetBrainsMono Nerd Font Mono"
+font-size = 16
+macos-option-as-alt = true
+macos-window-shadow = false
+
+# either tabs or transparent
+macos-titlebar-style = tabs
+macos-icon = "xray"

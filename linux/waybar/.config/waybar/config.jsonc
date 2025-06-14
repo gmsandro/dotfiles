@@ -13,6 +13,8 @@
     "cpu",
     "memory",
     "tray",
+    "keyboard-state",
+    "hyprland/language",
     "clock",
   ],
   "pulseaudio": {
@@ -48,6 +50,9 @@
   "memory": {
     "format": "󰍛 {used}/{total} GB",  
     "tooltip": false
+  },
+  "hyprland/language": {
+    "format": "{short}"
   },
   "bar": {
     "position": "top",

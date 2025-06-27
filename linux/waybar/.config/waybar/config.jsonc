@@ -12,9 +12,10 @@
     "network",
     "cpu",
     "memory",
-    "tray",
+    "battery",
     "keyboard-state",
     "hyprland/language",
+    "tray",
     "clock",
   ],
   "pulseaudio": {
@@ -50,6 +51,16 @@
   "memory": {
     "format": "󰍛 {used}/{total} GB",  
     "tooltip": false
+  },
+  "battery": {
+    "states": {
+      "warning": 30,
+      "critical": 15
+    },
+    "format": "{icon} {capacity}%",
+    "format-charging": "󰂄 {capacity}%",
+    "format-plugged": "󰂄 {capacity}%",
+    "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
   },
   "hyprland/language": {
     "format": "{short}"

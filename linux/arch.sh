@@ -27,5 +27,5 @@ yay -S --noconfirm --needed \
 	appimagelauncher \
 	lazydocker \
 	tldr \
-	pinta libreoffice \
+	pinta libreoffice gnome-calculator \
 	node npm pnpm

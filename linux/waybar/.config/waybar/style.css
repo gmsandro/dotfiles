@@ -4,6 +4,8 @@
   min-height: 0;
   font-family: CaskaydiaMono Nerd Font;
   font-size: 12px;
+  color: #cdd6f4;
+  background-color: #1a1b26;
 }
 
 #workspaces {
@@ -14,6 +16,16 @@
   all: initial;
   padding: 2px 6px;
   margin-right: 3px;
+}
+
+#workspaces button.urgent {
+  background-color: #f38ba8;
+  color: #1a1b26;
+}
+
+#workspaces button.urgent * {
+  background-color: inherit;
+  color: inherit;
 }
 
 #custom-dropbox,
@@ -38,8 +50,4 @@ tooltip label {
   padding: 2px;
 }
 
-* {
-  color: #cdd6f4;
-  background-color: #1a1b26;
-}
 /* @import "../omarchy/current/theme/waybar.css"; */

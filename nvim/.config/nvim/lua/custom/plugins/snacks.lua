@@ -185,6 +185,23 @@ return {
               end,
             })
             :map '<leader>uV'
+
+          -- Toggle Indent lines
+          Snacks.toggle
+            .new({
+              name = 'Indent Guides',
+              get = function()
+                return Snacks.indent.enabled
+              end,
+              set = function(state)
+                if state then
+                  Snacks.indent.enable()
+                else
+                  Snacks.indent.disable()
+                end
+              end,
+            })
+            :map '<leader>ui'
         end,
       })
     end,

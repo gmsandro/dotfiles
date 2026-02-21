@@ -54,6 +54,7 @@ return {
         { '<leader>g', group = '[G]it' },
         { '<leader>b', group = '[B]uffer' },
         { '<leader>x', group = '[]Trouble' },
+        { '<leader>9', group = '[9]9 AI' },
         -- { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
     },

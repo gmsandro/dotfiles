@@ -1,3 +1,5 @@
+local js_fmt = { 'prettierd', 'prettier', stop_after_first = true }
+
 return {
   { -- Autoformat
     'stevearc/conform.nvim',
@@ -27,16 +29,16 @@ return {
           lsp_format_opt = 'fallback'
         end
         return {
-          timeout_ms = 500,
+          timeout_ms = 2500,
           lsp_format = lsp_format_opt,
         }
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
-        javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
-        typescript = { 'prettierd', 'prettier', stop_after_first = true },
-        typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        javascript = js_fmt,
+        javascriptreact = js_fmt,
+        typescript = js_fmt,
+        typescriptreact = js_fmt,
 
         -- sql = { 'sqruff' },
         -- Conform can also run multiple formatters sequentially

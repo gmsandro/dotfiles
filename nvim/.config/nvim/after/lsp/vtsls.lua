@@ -1,7 +1,7 @@
--- vim.lsp.config('vtsls', {
---   init_options = {
---     preferences = {
---       importModuleSpecifierPreference = 'non-relative',
---     },
---   },
--- })
+return {
+  init_options = {
+    preferences = {
+      importModuleSpecifierPreference = 'non-relative',
+    },
+  },
+}

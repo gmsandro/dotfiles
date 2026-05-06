@@ -1,3 +1,3 @@
-vim.lsp.config('clangd', {
+return {
   filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
-})
+}

@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+default_session="${TMUX_DEFAULT_SESSION:-main}"
+tab=$'\t'
+current_session_id=""
+
+if ! command -v tmux >/dev/null 2>&1; then
+  echo "error: tmux is not installed" >&2
+  exit 1
+fi
+
+if ! command -v fzf >/dev/null 2>&1; then
+  echo "error: fzf is not installed" >&2
+  exit 1
+fi
+
+if ! tmux start-server >/dev/null 2>&1; then
+  echo "error: could not start tmux server" >&2
+  exit 1
+fi
+
+if [ -n "${TMUX:-}" ]; then
+  current_session_id="$(tmux display-message -p '#{session_id}' 2>/dev/null || true)"
+fi
+
+sessions="$(
+  tmux list-sessions \
+    -F "#{session_id}${tab}#{session_name}${tab}#{session_windows}${tab}#{?session_attached,attached,detached}" \
+    2>/dev/null || true
+)"
+
+if [[ -z "$sessions" ]]; then
+  if [ -n "${TMUX:-}" ]; then
+    exec tmux new-session -d -s "$default_session" \; switch-client -t "$default_session"
+  else
+    exec tmux new-session -s "$default_session"
+  fi
+fi
+
+rows=""
+while IFS=$'\t' read -r session_id session_name window_count attached_state; do
+  [[ -n "$session_id" ]] || continue
+
+  marker=" "
+  if [[ "$session_id" == "$current_session_id" ]]; then
+    marker="*"
+  fi
+
+  window_label="windows"
+  if [[ "$window_count" == "1" ]]; then
+    window_label="window"
+  fi
+
+  printf -v row '%s %-24s %3s %-7s %s\t%s' "$marker" "$session_name" "$window_count" "$window_label" "$attached_state" "$session_id"
+  rows+="${row}"$'\n'
+done <<< "$sessions"
+
+choice="$(
+  printf '%s' "$rows" | fzf \
+    --prompt='tmux sessions> ' \
+    --height=40% \
+    --layout=reverse \
+    --border \
+    --delimiter="$tab" \
+    --with-nth=1 \
+    --preview='tmux list-windows -t {2} -F "#{?window_active,*, } #{window_index}: #{window_name} #{window_flags}"' \
+    --preview-window=down,40%,border-top \
+    --exit-0
+)" || exit 0
+
+[[ -n "$choice" ]] || exit 0
+
+session="${choice##*$tab}"
+
+if [ -n "${TMUX:-}" ]; then
+  exec tmux switch-client -t "$session"
+else
+  exec tmux attach-session -t "$session"
+fi

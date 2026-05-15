@@ -1,5 +1,3 @@
-local js_fmt = { 'prettierd', 'prettier', stop_after_first = true }
-
 return {
   { -- Autoformat
     'stevearc/conform.nvim',
@@ -35,10 +33,12 @@ return {
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        javascript = js_fmt,
-        javascriptreact = js_fmt,
-        typescript = js_fmt,
-        typescriptreact = js_fmt,
+        javascript = { "oxfmt" },
+        javascriptreact = { "oxfmt" },
+        typescript = { "oxfmt" },
+        typescriptreact = { "oxfmt" },
+        json = { "oxfmt" },
+        vue = { "oxfmt" },
 
         -- sql = { 'sqruff' },
         -- Conform can also run multiple formatters sequentially

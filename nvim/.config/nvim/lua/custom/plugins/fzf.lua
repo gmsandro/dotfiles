@@ -13,27 +13,11 @@ return {
         winopts = {
           border = 'single',
         },
-        grep = {
-          actions = {
-            -- actions inherit from 'actions.files' and merge
-            -- this action toggles between 'grep' and 'live_grep'
-            ['ctrl-g'] = { actions.grep_lgrep },
-            -- uncomment to enable '.gitignore' toggle for grep
-            ['ctrl-r'] = { actions.toggle_ignore },
-          },
-        },
       }
 
-      vim.keymap.set('n', '<leader><leader>', function()
-        require('fzf-lua').files {
-          cwd = root.get(),
-        }
-      end, { desc = 'fzf files' })
-
+      vim.keymap.set('n', '<leader><leader>', require('fzf-lua').files, { desc = 'fzf files' })
       vim.keymap.set('n', 'gr', require('fzf-lua').lsp_references, { desc = 'LSP Go to References' })
-      vim.keymap.set('n', '<leader>/', function()
-        require('fzf-lua').live_grep { cwd = root.get() }
-      end, { desc = 'FzF Live Grep' })
+      vim.keymap.set('n', '<leader>/', require('fzf-lua').live_grep, { desc = 'FzF Live Grep' })
       vim.keymap.set('n', '<leader>fb', require('fzf-lua').buffers, { desc = '[B]uffer' })
       vim.keymap.set('n', '<leader>fm', require('fzf-lua').manpages, { desc = '[M]anpages' })
       vim.keymap.set('n', '<leader>fC', require('fzf-lua').colorschemes, { desc = '[C]olorschemes' })

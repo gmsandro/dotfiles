@@ -3,11 +3,9 @@ local M = {}
 ---@type table<string,true>
 M.hl = {}
 
+-- Highlight colors in your code. Also includes Tailwind CSS support.
+-- Set up from mini.lua via `require('custom.hipatterns').setup()`.
 M.plugin = {
-  'echasnovski/mini.hipatterns',
-  recommended = true,
-  desc = 'Highlight colors in your code. Also includes Tailwind CSS support.',
-  event = { 'BufReadPre', 'BufNewFile' },
   opts = function()
     local hi = require 'mini.hipatterns'
     return {
@@ -421,4 +419,8 @@ M.colors = {
   },
 }
 
-return M.plugin
+function M.setup()
+  M.plugin.config(nil, M.plugin.opts())
+end
+
+return M

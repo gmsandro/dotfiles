@@ -1,5 +1,4 @@
 return {
-  { 'j-hui/fidget.nvim', opts = {} },
   {
     -- Non-LSP tools (formatters, linters). Language files in custom/plugins
     -- add to `ensure_installed`; the lists are merged via `opts_extend`.

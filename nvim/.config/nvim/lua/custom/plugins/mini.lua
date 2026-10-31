@@ -20,6 +20,11 @@ return {
       require('mini.move').setup()
 
       require('mini.icons').setup()
+      -- Serve icons to plugins that expect nvim-web-devicons (diffview, bufferline, trouble)
+      MiniIcons.mock_nvim_web_devicons()
+
+      -- Color highlighting (hex, Tailwind)
+      require('custom.hipatterns').setup()
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,

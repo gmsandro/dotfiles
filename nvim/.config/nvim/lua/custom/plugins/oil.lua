@@ -4,9 +4,7 @@ return {
     ---@module 'oil'
     ---@type oil.SetupOpts
     opts = {},
-    -- optional dependencies
-    dependencies = { { 'echasnovski/mini.icons', opts = {} } },
-    -- dependencies = { 'nvim-tree/nvim-web-devicons' }, -- use if prefer nvim-web-devicons
+    dependencies = { 'echasnovski/mini.nvim' }, -- mini.icons
     config = function()
       require('oil').setup {
         columns = {

@@ -1,18 +1,43 @@
 return {
+  { 'j-hui/fidget.nvim', opts = {} },
   {
-    'folke/lazydev.nvim',
-    ft = 'lua', -- only load on lua files
+    -- Non-LSP tools (formatters, linters). Language files in custom/plugins
+    -- add to `ensure_installed`; the lists are merged via `opts_extend`.
+    'mason-org/mason.nvim',
+    build = ':MasonUpdate',
+    opts_extend = { 'ensure_installed' },
     opts = {
-      library = {
-        -- See the configuration section for more details
-        -- Load luvit types when the `vim.uv` word is found
-        { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+      ensure_installed = {},
+    },
+    config = function(_, opts)
+      require('mason').setup(opts)
+
+      local registry = require 'mason-registry'
+      registry.refresh(function()
+        for _, name in ipairs(opts.ensure_installed) do
+          local pkg = registry.get_package(name)
+          if not pkg:is_installed() and not pkg:is_installing() then
+            pkg:install()
+          end
+        end
+      end)
+    end,
+  },
+  {
+    -- LSP servers (lspconfig names), added by language files like mason.nvim above.
+    -- Installed servers are enabled automatically.
+    'mason-org/mason-lspconfig.nvim',
+    dependencies = { 'mason-org/mason.nvim', 'neovim/nvim-lspconfig' },
+    opts_extend = { 'ensure_installed' },
+    opts = {
+      ensure_installed = {},
+      automatic_enable = {
+        exclude = {
+          'rust_analyzer',
+        },
       },
     },
   },
-  { 'j-hui/fidget.nvim', opts = {} },
-  { 'mason-org/mason.nvim' },
-  { 'mason-org/mason-lspconfig.nvim' },
   {
     'saghen/blink.cmp',
     dependencies = { 'rafamadriz/friendly-snippets' },
@@ -21,20 +46,5 @@ return {
   {
     'neovim/nvim-lspconfig',
     dependencies = { 'saghen/blink.cmp' },
-    opts = {
-      ensure_installed = { 'lua_ls', 'stylua', 'ty', 'ruff', 'ts_ls' },
-    },
-    config = function(_, opts)
-      require('mason-lspconfig').setup {
-        automatic_enable = {
-          exclude = {
-            'rust_analyzer',
-          },
-        },
-        ensure_installed = opts.ensure_installed,
-      }
-
-      require('mason').setup()
-    end,
   },
 }

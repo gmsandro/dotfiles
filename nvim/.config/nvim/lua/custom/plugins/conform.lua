@@ -31,16 +31,8 @@ return {
           lsp_format = lsp_format_opt,
         }
       end,
+      -- Language files in custom/plugins add their formatters here
       formatters_by_ft = {
-        lua = { 'stylua' },
-        javascript = { "oxfmt" },
-        javascriptreact = { "oxfmt" },
-        typescript = { "oxfmt" },
-        typescriptreact = { "oxfmt" },
-        json = { "oxfmt" },
-        vue = { "oxfmt" },
-        python = { 'ruff_organize_imports', 'ruff_format' },
-
         -- sql = { 'sqruff' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },

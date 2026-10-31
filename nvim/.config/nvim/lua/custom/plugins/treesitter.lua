@@ -4,27 +4,24 @@ return {
     branch = 'main',
     lazy = false,
     build = ':TSUpdate',
-    config = function()
+    -- Language files in custom/plugins add their parsers to `ensure_installed`
+    opts_extend = { 'ensure_installed' },
+    opts = {
+      ensure_installed = {
+        'vimdoc',
+        'c',
+        'bash',
+        'markdown',
+        'printf',
+        'html',
+      },
+    },
+    config = function(_, opts)
       require('nvim-treesitter').setup {
         install_dir = vim.fn.stdpath('data') .. '/site',
       }
 
-      require('nvim-treesitter').install {
-        'vimdoc',
-        'c',
-        'lua',
-        'rust',
-        'bash',
-        'markdown',
-        'go',
-        'luadoc',
-        'printf',
-        'tsx',
-        'javascript',
-        'typescript',
-        'html',
-        'jsdoc',
-      }
+      require('nvim-treesitter').install(opts.ensure_installed)
 
       vim.api.nvim_create_autocmd("FileType", {
         callback = function(args)

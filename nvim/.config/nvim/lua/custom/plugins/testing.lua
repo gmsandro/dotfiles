@@ -6,17 +6,21 @@ return {
       'nvim-lua/plenary.nvim',
       'antoinemadec/FixCursorHold.nvim',
       'nvim-treesitter/nvim-treesitter',
-      { 'fredrikaverpil/neotest-golang', version = '*' }, -- Installation
     },
-    config = function()
-      local neotest_golang_opts = {} -- Specify custom configuration
-      require('neotest').setup {
-        adapters = {
-          require 'neotest-golang'(neotest_golang_opts), -- Registration
-        },
-        status = { virtual_text = true },
-        output = { open_on_run = true },
-      }
+    opts = {
+      -- Language files in custom/plugins register adapters as
+      -- `adapters = { ['neotest-<name>'] = { <adapter opts> } }`
+      adapters = {},
+      status = { virtual_text = true },
+      output = { open_on_run = true },
+    },
+    config = function(_, opts)
+      local adapters = {}
+      for name, adapter_opts in pairs(opts.adapters) do
+        table.insert(adapters, require(name)(adapter_opts))
+      end
+      opts.adapters = adapters
+      require('neotest').setup(opts)
     end,
     keys = {
       { '<leader>t', '', desc = '+test' },

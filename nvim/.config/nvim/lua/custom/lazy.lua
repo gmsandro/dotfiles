@@ -12,6 +12,9 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup {
   { import = 'custom.plugins' },
+  -- Per-language setup (LSP, tools, formatters, parsers). Imported after
+  -- custom.plugins so the base specs' `opts_extend` applies to these lists.
+  { import = 'custom.lang' },
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`

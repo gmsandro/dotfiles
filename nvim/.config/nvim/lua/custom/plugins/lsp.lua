@@ -21,13 +21,14 @@ return {
   {
     'neovim/nvim-lspconfig',
     dependencies = { 'saghen/blink.cmp' },
-    ensure_installed = { 'lua_ls', 'stylua' },
+    opts = {
+      ensure_installed = { 'lua_ls', 'stylua', 'ty', 'ruff', 'ts_ls' },
+    },
     config = function(_, opts)
       require('mason-lspconfig').setup {
         automatic_enable = {
           exclude = {
             'rust_analyzer',
-            'ts_ls',
           },
         },
         ensure_installed = opts.ensure_installed,

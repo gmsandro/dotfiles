@@ -39,6 +39,7 @@ return {
         typescriptreact = { "oxfmt" },
         json = { "oxfmt" },
         vue = { "oxfmt" },
+        python = { 'ruff_organize_imports', 'ruff_format' },
 
         -- sql = { 'sqruff' },
         -- Conform can also run multiple formatters sequentially

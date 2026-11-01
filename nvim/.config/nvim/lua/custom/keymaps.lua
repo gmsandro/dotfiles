@@ -109,3 +109,19 @@ vim.keymap.set('n', '<leader>fn', '<cmd>enew<cr>', { desc = 'New File' })
 vim.keymap.set('n', '<leader>l', '<cmd>Lazy<cr>', { desc = 'Lazy' })
 
 vim.keymap.set('n', '<space>rs', '<cmd>source %<CR>')
+
+-- undotree (built-in since 0.12, see :h package-undotree). Loaded on first use,
+-- since lazy.nvim resets 'runtimepath' after this file runs.
+vim.keymap.set('n', '<leader>ut', function()
+  vim.cmd.packadd 'nvim.undotree'
+  require('undotree').open()
+end, { desc = 'UndoTree' })
+
+-- todo comments
+local todo_pattern = [[\v<(TODO|FIX|FIXME|HACK|WARN|PERF|NOTE|TEST)>]]
+vim.keymap.set('n', ']t', function()
+  vim.fn.search(todo_pattern, 'W')
+end, { desc = 'Next Todo Comment' })
+vim.keymap.set('n', '[t', function()
+  vim.fn.search(todo_pattern, 'bW')
+end, { desc = 'Previous Todo Comment' })

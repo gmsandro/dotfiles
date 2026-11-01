@@ -31,6 +31,16 @@ M.plugin = {
         style = 'full',
       },
       highlighters = {
+        -- Todo comments (standalone words only)
+        fix = { pattern = '%f[%w]()FIX()%f[%W]', group = 'MiniHipatternsFixme' },
+        fixme = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'MiniHipatternsFixme' },
+        hack = { pattern = '%f[%w]()HACK()%f[%W]', group = 'MiniHipatternsHack' },
+        warn = { pattern = '%f[%w]()WARN()%f[%W]', group = 'MiniHipatternsHack' },
+        todo = { pattern = '%f[%w]()TODO()%f[%W]', group = 'MiniHipatternsTodo' },
+        perf = { pattern = '%f[%w]()PERF()%f[%W]', group = 'MiniHipatternsTodo' },
+        test = { pattern = '%f[%w]()TEST()%f[%W]', group = 'MiniHipatternsTodo' },
+        note = { pattern = '%f[%w]()NOTE()%f[%W]', group = 'MiniHipatternsNote' },
+
         hex_color = hi.gen_highlighter.hex_color { priority = 2000 },
         shorthand = {
           pattern = '()#%x%x%x()%f[^%x%w]',

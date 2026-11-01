@@ -19,6 +19,17 @@ return {
 
       require('mini.move').setup()
 
+      require('mini.pairs').setup()
+
+      -- Git signs in the gutter; mini.git provides the branch for the statusline
+      require('mini.git').setup()
+      require('mini.diff').setup {
+        view = {
+          style = 'sign',
+          signs = { add = '+', change = '~', delete = '_' },
+        },
+      }
+
       require('mini.icons').setup()
       -- Serve icons to plugins that expect nvim-web-devicons (diffview, bufferline, trouble)
       MiniIcons.mock_nvim_web_devicons()

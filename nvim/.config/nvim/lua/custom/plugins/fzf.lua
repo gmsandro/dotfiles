@@ -21,6 +21,12 @@ return {
       vim.keymap.set('n', '<leader>fm', require('fzf-lua').manpages, { desc = '[M]anpages' })
       vim.keymap.set('n', '<leader>fC', require('fzf-lua').colorschemes, { desc = '[C]olorschemes' })
       vim.keymap.set('n', '<leader>fa', require('fzf-lua').awesome_colorschemes, { desc = '[A]wesome Colorschemes' })
+      vim.keymap.set('n', '<leader>xt', function()
+        require('fzf-lua').grep { search = [[\b(TODO|FIX|FIXME|HACK|WARN|PERF|NOTE|TEST)\b]], no_esc = true }
+      end, { desc = 'Todo comments' })
+      vim.keymap.set('n', '<leader>xT', function()
+        require('fzf-lua').grep { search = [[\b(TODO|FIX|FIXME)\b]], no_esc = true }
+      end, { desc = 'Todo/Fix/Fixme' })
       vim.keymap.set('n', '<leader>fc', function()
         require('fzf-lua').files {
           cwd = vim.fn.stdpath 'config',

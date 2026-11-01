@@ -16,10 +16,6 @@ return {
       },
     },
     config = function(_, opts)
-      require('nvim-treesitter').setup {
-        install_dir = vim.fn.stdpath('data') .. '/site',
-      }
-
       require('nvim-treesitter').install(opts.ensure_installed)
 
       -- Start treesitter highlighting for every filetype with a parser
@@ -50,9 +46,8 @@ return {
 
       local move = require 'nvim-treesitter-textobjects.move'
 
-      -- ]f/[f function, ]c/[c class, ]a/[a parameter (start); uppercase jumps to the end.
-      -- Note: ]a/[a replace the default argument list navigation (:next/:prev still work).
-      local objects = { f = { '@function.outer', 'function' }, c = { '@class.outer', 'class' }, a = { '@parameter.inner', 'parameter' } }
+      -- ]f/[f function, ]c/[c class (start); uppercase jumps to the end.
+      local objects = { f = { '@function.outer', 'function' }, c = { '@class.outer', 'class' } }
       for key, obj in pairs(objects) do
         local query, name = obj[1], obj[2]
         for _, dir in ipairs { { ']', 'next', 'Next' }, { '[', 'previous', 'Prev' } } do

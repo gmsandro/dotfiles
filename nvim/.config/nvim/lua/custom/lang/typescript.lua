@@ -20,7 +20,6 @@ return {
         typescript = { 'oxfmt' },
         typescriptreact = { 'oxfmt' },
         json = { 'oxfmt' },
-        vue = { 'oxfmt' },
       },
     },
   },

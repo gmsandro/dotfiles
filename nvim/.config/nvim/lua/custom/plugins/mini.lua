@@ -3,7 +3,11 @@ return {
     'echasnovski/mini.nvim',
     config = function()
       -- Around/inside textobjects, e.g. va), yinq, ci'
-      require('mini.ai').setup { n_lines = 500 }
+      -- next/last variants moved off an/in, which 0.12 uses for incremental selection (:h v_an)
+      require('mini.ai').setup {
+        n_lines = 500,
+        mappings = { around_next = 'aN', inside_next = 'iN', around_last = 'aL', inside_last = 'iL' },
+      }
 
       -- Surroundings: saiw) add, sd' delete, sr)' replace
       require('mini.surround').setup()

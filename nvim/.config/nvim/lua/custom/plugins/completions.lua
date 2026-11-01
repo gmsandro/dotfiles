@@ -7,18 +7,7 @@ return {
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {
-      -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
-      -- 'super-tab' for mappings similar to vscode (tab to accept)
-      -- 'enter' for enter to accept
-      -- 'none' for no mappings
-      --
-      -- All presets have the following mappings:
-      -- C-space: Open menu or open docs if already open
-      -- C-n/C-p or Up/Down: Select next/previous item
-      -- C-e: Hide menu
-      -- C-k: Toggle signature help (if signature.enabled = true)
-      --
-      -- See :h blink-cmp-config-keymap for defining your own keymap
+      -- C-y accept, C-space open menu/docs, C-n/C-p select, C-e hide, C-k toggle signature
       keymap = { preset = 'default' },
 
       appearance = {
@@ -31,36 +20,22 @@ return {
           lazydev = {
             name = 'LazyDev',
             module = 'lazydev.integrations.blink',
-            -- make lazydev completions top priority (see `:h blink.cmp`)
-            score_offset = 100,
+            score_offset = 100, -- make lazydev completions top priority
           },
         },
       },
-      signature = {
-        enabled = true,
-        window = { border = 'none' },
-      },
+      signature = { enabled = true },
       completion = {
         accept = {
-          -- experimental auto-brackets support
-          auto_brackets = {
-            enabled = true,
-          },
+          auto_brackets = { enabled = true },
         },
         menu = {
-          border = 'none',
           draw = {
             treesitter = { 'lsp' },
           },
         },
-        documentation = {
-          window = { border = 'none' },
-          auto_show = false,
-          auto_show_delay_ms = 0,
-        },
-        ghost_text = {
-          enabled = false,
-        },
+        documentation = { auto_show = false },
+        ghost_text = { enabled = false },
       },
 
       fuzzy = { implementation = 'prefer_rust_with_warning' },

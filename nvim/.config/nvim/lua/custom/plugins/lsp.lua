@@ -1,6 +1,6 @@
 return {
   {
-    -- Non-LSP tools (formatters, linters). Language files in custom/plugins
+    -- Non-LSP tools (formatters, linters). Language files in custom/lang
     -- add to `ensure_installed`; the lists are merged via `opts_extend`.
     'mason-org/mason.nvim',
     build = ':MasonUpdate',
@@ -23,27 +23,25 @@ return {
     end,
   },
   {
-    -- LSP servers (lspconfig names), added by language files like mason.nvim above.
+    -- LSP servers installed via Mason (lspconfig names), added by language files.
     -- Installed servers are enabled automatically.
     'mason-org/mason-lspconfig.nvim',
     dependencies = { 'mason-org/mason.nvim', 'neovim/nvim-lspconfig' },
     opts_extend = { 'ensure_installed' },
     opts = {
       ensure_installed = {},
-      automatic_enable = {
-        exclude = {
-          'rust_analyzer',
-        },
-      },
     },
   },
   {
-    'saghen/blink.cmp',
-    dependencies = { 'rafamadriz/friendly-snippets' },
-    version = '1.*',
-  },
-  {
+    -- LSP servers installed outside Mason (e.g. clangd from Xcode), added by
+    -- language files to `servers` and enabled here.
     'neovim/nvim-lspconfig',
-    dependencies = { 'saghen/blink.cmp' },
+    opts_extend = { 'servers' },
+    opts = {
+      servers = {},
+    },
+    config = function(_, opts)
+      vim.lsp.enable(opts.servers)
+    end,
   },
 }

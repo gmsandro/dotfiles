@@ -1,123 +1,78 @@
--- [[ Keymaps ]]
---  See `:help vim.keymap.set()`
--- Clear highlights on search when pressing <Esc> in normal mode
---  See `:help hlsearch`
-vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+-- Neovim's own defaults cover a lot (see :h default-mappings): ]d/[d, ]q/[q,
+-- ]b/[b, <C-W>d (line diagnostics), K, gra/gri/grn/grr/grt/grx, gO, <C-S> in
+-- insert mode, gc/gcc. This file only adds what's missing.
 
--- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+-- Clear search highlight
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
--- Open a terminal at the bottom of the screen with a fixed height.
-vim.keymap.set("n", ",st", function()
-  vim.cmd.new()
-  vim.cmd.wincmd("J")
-  vim.api.nvim_win_set_height(0, 12)
-  vim.wo.winfixheight = true
-  vim.cmd.term()
-end)
-
---  See `:help wincmd` for a list of all window commands
+-- Windows
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-
--- Resize window using <ctrl> arrow keys
 vim.keymap.set('n', '<C-Up>', '<cmd>resize +2<cr>', { desc = 'Increase Window Height' })
 vim.keymap.set('n', '<C-Down>', '<cmd>resize -2<cr>', { desc = 'Decrease Window Height' })
 vim.keymap.set('n', '<C-Left>', '<cmd>vertical resize -2<cr>', { desc = 'Decrease Window Width' })
 vim.keymap.set('n', '<C-Right>', '<cmd>vertical resize +2<cr>', { desc = 'Increase Window Width' })
 
--- better up/down
+-- Move by display lines unless a count is given
 vim.keymap.set({ 'n', 'x' }, 'j', "v:count == 0 ? 'gj' : 'j'", { desc = 'Down', expr = true, silent = true })
 vim.keymap.set({ 'n', 'x' }, 'k', "v:count == 0 ? 'gk' : 'k'", { desc = 'Up', expr = true, silent = true })
 
--- commenting
+-- Commenting
 vim.keymap.set('n', 'gco', 'o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>', { desc = 'Add Comment Below' })
 vim.keymap.set('n', 'gcO', 'O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>', { desc = 'Add Comment Above' })
 
+-- Buffers
 vim.keymap.set('n', '<leader>bo', function()
   Snacks.bufdelete.other()
 end, { desc = 'Delete Other Buffers' })
 vim.keymap.set('n', '<leader>bn', '<cmd>enew<cr>', { desc = 'New Buffer' })
 
--- diagnostic
-local diagnostic_goto = function(next, severity)
-  local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
-  severity = severity and vim.diagnostic.severity[severity] or nil
+-- Diagnostics: open the float after every jump, including the default ]d/[d
+vim.diagnostic.config {
+  jump = {
+    on_jump = function(diagnostic, bufnr)
+      if diagnostic then
+        vim.diagnostic.open_float { bufnr = bufnr, scope = 'cursor', focus = false }
+      end
+    end,
+  },
+}
+local function diagnostic_jump(count, severity)
   return function()
-    go { severity = severity }
+    vim.diagnostic.jump { count = count, severity = vim.diagnostic.severity[severity] }
   end
 end
-vim.keymap.set('n', '<leader>cd', vim.diagnostic.open_float, { desc = 'Line Diagnostics' })
-vim.keymap.set('n', ']d', diagnostic_goto(true), { desc = 'Next Diagnostic' })
-vim.keymap.set('n', '[d', diagnostic_goto(false), { desc = 'Prev Diagnostic' })
-vim.keymap.set('n', ']e', diagnostic_goto(true, 'ERROR'), { desc = 'Next Error' })
-vim.keymap.set('n', '[e', diagnostic_goto(false, 'ERROR'), { desc = 'Prev Error' })
-vim.keymap.set('n', ']w', diagnostic_goto(true, 'WARN'), { desc = 'Next Warning' })
-vim.keymap.set('n', '[w', diagnostic_goto(false, 'WARN'), { desc = 'Prev Warning' })
+vim.keymap.set('n', ']e', diagnostic_jump(1, 'ERROR'), { desc = 'Next Error' })
+vim.keymap.set('n', '[e', diagnostic_jump(-1, 'ERROR'), { desc = 'Prev Error' })
+vim.keymap.set('n', ']w', diagnostic_jump(1, 'WARN'), { desc = 'Next Warning' })
+vim.keymap.set('n', '[w', diagnostic_jump(-1, 'WARN'), { desc = 'Prev Warning' })
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Diagnostics to location list' })
 
-
--- lsp
-vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { noremap = true, silent = true, desc = 'Go to Definition' })
-vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { noremap = true, silent = true, desc = 'Go to Declaration' })
-vim.keymap.set('n', 'gI', vim.lsp.buf.implementation,
-  { noremap = true, silent = true, desc = 'Go to Implementation' })
-vim.keymap.set('n', 'gy', vim.lsp.buf.type_definition,
-  { noremap = true, silent = true, desc = 'Go to T[y]pe Definition' })
-vim.keymap.set('n', 'gK', vim.lsp.buf.signature_help, { noremap = true, silent = true, desc = 'Signature Help' })
-vim.keymap.set('i', '<c-k>', vim.lsp.buf.signature_help, { noremap = true, silent = true, desc = 'Signature Help' })
-
-vim.keymap.set('n', 'gK', function()
-  return vim.lsp.buf.signature_help()
-end, { desc = 'Signature Help' })
+-- LSP
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Go to Definition' })
+vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = 'Go to Declaration' })
+vim.keymap.set('n', 'gI', vim.lsp.buf.implementation, { desc = 'Go to Implementation' })
+vim.keymap.set('n', 'gy', vim.lsp.buf.type_definition, { desc = 'Go to T[y]pe Definition' })
+vim.keymap.set('n', 'gK', vim.lsp.buf.signature_help, { desc = 'Signature Help' })
 vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, { desc = 'Code Action' })
-vim.keymap.set({ 'n', 'v' }, '<leader>cc', vim.lsp.codelens.run, { desc = 'Run Codelens' })
-vim.keymap.set('n', '<leader>cC', vim.lsp.codelens.refresh, { desc = 'Refresh & Display Codelens' })
 vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, { desc = 'Rename' })
-vim.keymap.set('n', ']]', function()
-  Snacks.words.jump(vim.v.count1)
-end, {
-  desc = 'Next Reference',
-})
-vim.keymap.set('n', '[[', function()
-  Snacks.words.jump(-vim.v.count1)
-end, {
-  desc = 'Prev Reference',
-})
-vim.keymap.set('n', '<a-n>', function()
-  Snacks.words.jump(vim.v.count1, true)
-end, {
-  desc = 'Next Reference',
-})
-vim.keymap.set('n', '<a-p>', function()
-  Snacks.words.jump(-vim.v.count1, true)
-end, {
-  desc = 'Prev Reference',
-})
 
-
---keywordprg
 vim.keymap.set('n', '<leader>K', '<cmd>norm! K<cr>', { desc = 'Keywordprg' })
-
--- new file
-vim.keymap.set('n', '<leader>fn', '<cmd>enew<cr>', { desc = 'New File' })
-
--- lazy
 vim.keymap.set('n', '<leader>l', '<cmd>Lazy<cr>', { desc = 'Lazy' })
+vim.keymap.set('n', '<leader>rs', '<cmd>source %<CR>', { desc = 'Source current file' })
 
-vim.keymap.set('n', '<space>rs', '<cmd>source %<CR>')
-
--- undotree (built-in since 0.12, see :h package-undotree). Loaded on first use,
+-- Undotree (built-in since 0.12, see :h package-undotree). Loaded on first use,
 -- since lazy.nvim resets 'runtimepath' after this file runs.
 vim.keymap.set('n', '<leader>ut', function()
   vim.cmd.packadd 'nvim.undotree'
   require('undotree').open()
 end, { desc = 'UndoTree' })
 
--- todo comments
+-- Todo comments
 local todo_pattern = [[\v<(TODO|FIX|FIXME|HACK|WARN|PERF|NOTE|TEST)>]]
 vim.keymap.set('n', ']t', function()
   vim.fn.search(todo_pattern, 'W')

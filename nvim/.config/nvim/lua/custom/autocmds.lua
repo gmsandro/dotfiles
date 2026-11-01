@@ -1,19 +1,5 @@
--- [[ Autocommands ]]
---  See `:help lua-guide-autocommands`
-
--- Highlight when yanking (copying) text
---  Try it with `yap` in normal mode
---  See `:help vim.highlight.on_yank()`
--- vim.api.nvim_create_autocmd('TextYankPost', {
---   desc = 'Highlight when yanking (copying) text',
---   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
---   callback = function()
---     vim.highlight.on_yank()
---   end,
--- })
-
 local function augroup(name)
-  return vim.api.nvim_create_augroup('lazyvim_' .. name, { clear = true })
+  return vim.api.nvim_create_augroup('custom_' .. name, { clear = true })
 end
 
 -- Check if we need to reload the file when it changed
@@ -26,11 +12,10 @@ vim.api.nvim_create_autocmd({ 'FocusGained', 'TermClose', 'TermLeave' }, {
   end,
 })
 
--- Highlight on yank
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = augroup 'highlight_yank',
   callback = function()
-    (vim.hl or vim.highlight).on_yank()
+    vim.hl.on_yank()
   end,
 })
 
@@ -50,7 +35,7 @@ vim.api.nvim_create_autocmd('LspProgress', {
   end,
 })
 
--- resize splits if window got resized
+-- Resize splits if window got resized
 vim.api.nvim_create_autocmd({ 'VimResized' }, {
   group = augroup 'resize_splits',
   callback = function()
@@ -60,16 +45,15 @@ vim.api.nvim_create_autocmd({ 'VimResized' }, {
   end,
 })
 
--- go to last loc when opening a buffer
+-- Go to last location when opening a buffer
 vim.api.nvim_create_autocmd('BufReadPost', {
   group = augroup 'last_loc',
   callback = function(event)
-    local exclude = { 'gitcommit' }
     local buf = event.buf
-    if vim.tbl_contains(exclude, vim.bo[buf].filetype) or vim.b[buf].lazyvim_last_loc then
+    if vim.bo[buf].filetype == 'gitcommit' or vim.b[buf].custom_last_loc then
       return
     end
-    vim.b[buf].lazyvim_last_loc = true
+    vim.b[buf].custom_last_loc = true
     local mark = vim.api.nvim_buf_get_mark(buf, '"')
     local lcount = vim.api.nvim_buf_line_count(buf)
     if mark[1] > 0 and mark[1] <= lcount then
@@ -78,26 +62,10 @@ vim.api.nvim_create_autocmd('BufReadPost', {
   end,
 })
 
--- close some filetypes with <q>
+-- Close some filetypes with <q>
 vim.api.nvim_create_autocmd('FileType', {
   group = augroup 'close_with_q',
-  pattern = {
-    'PlenaryTestPopup',
-    'checkhealth',
-    'dbout',
-    'gitsigns-blame',
-    'grug-far',
-    'help',
-    'lspinfo',
-    'neotest-output',
-    'neotest-output-panel',
-    'neotest-summary',
-    'notify',
-    'qf',
-    'spectre_panel',
-    'startuptime',
-    'tsplayground',
-  },
+  pattern = { 'checkhealth', 'help', 'qf' },
   callback = function(event)
     vim.bo[event.buf].buflisted = false
     vim.schedule(function()
@@ -113,7 +81,7 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
--- make it easier to close man-files when opened inline
+-- Make it easier to close man-files when opened inline
 vim.api.nvim_create_autocmd('FileType', {
   group = augroup 'man_unlisted',
   pattern = { 'man' },
@@ -122,22 +90,13 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
--- wrap and check for spell in text filetypes
+-- Wrap and check for spell in text filetypes
 vim.api.nvim_create_autocmd('FileType', {
   group = augroup 'wrap_spell',
   pattern = { 'text', 'plaintex', 'typst', 'gitcommit', 'markdown' },
   callback = function()
     vim.opt_local.wrap = true
     vim.opt_local.spell = true
-  end,
-})
-
--- Fix conceallevel for json files
-vim.api.nvim_create_autocmd({ 'FileType' }, {
-  group = augroup 'json_conceal',
-  pattern = { 'json', 'jsonc', 'json5' },
-  callback = function()
-    vim.opt_local.conceallevel = 0
   end,
 })
 

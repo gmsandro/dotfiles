@@ -4,12 +4,11 @@ return {
     branch = 'main',
     lazy = false,
     build = ':TSUpdate',
-    -- Language files in custom/plugins add their parsers to `ensure_installed`
+    -- Language files in custom/lang add their parsers to `ensure_installed`
     opts_extend = { 'ensure_installed' },
     opts = {
       ensure_installed = {
         'vimdoc',
-        'c',
         'bash',
         'markdown',
         'printf',
@@ -23,34 +22,16 @@ return {
 
       require('nvim-treesitter').install(opts.ensure_installed)
 
-      vim.api.nvim_create_autocmd("FileType", {
+      -- Start treesitter highlighting for every filetype with a parser
+      vim.api.nvim_create_autocmd('FileType', {
+        group = vim.api.nvim_create_augroup('custom_treesitter', { clear = true }),
         callback = function(args)
-          if vim.bo[args.buf].buftype ~= "" then
+          if vim.bo[args.buf].buftype ~= '' then
             return
           end
           pcall(vim.treesitter.start, args.buf)
         end,
       })
-
-      -- vim.api.nvim_create_autocmd('FileType', {
-      --   pattern = {
-      --     'c',
-      --     'go',
-      --     'html',
-      --     'javascript',
-      --     'lua',
-      --     'markdown',
-      --     'java',
-      --     'rust',
-      --     'tsx',
-      --     'typescript',
-      --     'vim',
-      --   },
-      --   callback = function()
-      --     vim.treesitter.start()
-      --     vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-      --   end,
-      -- })
     end,
   },
 
@@ -69,53 +50,26 @@ return {
 
       local move = require 'nvim-treesitter-textobjects.move'
 
-      vim.keymap.set({ 'n', 'x', 'o' }, ']f', function()
-        move.goto_next_start('@function.outer', 'textobjects')
-      end)
-
-      vim.keymap.set({ 'n', 'x', 'o' }, ']c', function()
-        move.goto_next_start('@class.outer', 'textobjects')
-      end)
-
-      vim.keymap.set({ 'n', 'x', 'o' }, ']a', function()
-        move.goto_next_start('@parameter.inner', 'textobjects')
-      end)
-
-      vim.keymap.set({ 'n', 'x', 'o' }, ']F', function()
-        move.goto_next_end('@function.outer', 'textobjects')
-      end)
-
-      vim.keymap.set({ 'n', 'x', 'o' }, ']C', function()
-        move.goto_next_end('@class.outer', 'textobjects')
-      end)
-
-      vim.keymap.set({ 'n', 'x', 'o' }, ']A', function()
-        move.goto_next_end('@parameter.inner', 'textobjects')
-      end)
-
-      vim.keymap.set({ 'n', 'x', 'o' }, '[f', function()
-        move.goto_previous_start('@function.outer', 'textobjects')
-      end)
-
-      vim.keymap.set({ 'n', 'x', 'o' }, '[c', function()
-        move.goto_previous_start('@class.outer', 'textobjects')
-      end)
-
-      vim.keymap.set({ 'n', 'x', 'o' }, '[a', function()
-        move.goto_previous_start('@parameter.inner', 'textobjects')
-      end)
-
-      vim.keymap.set({ 'n', 'x', 'o' }, '[F', function()
-        move.goto_previous_end('@function.outer', 'textobjects')
-      end)
-
-      vim.keymap.set({ 'n', 'x', 'o' }, '[C', function()
-        move.goto_previous_end('@class.outer', 'textobjects')
-      end)
-
-      vim.keymap.set({ 'n', 'x', 'o' }, '[A', function()
-        move.goto_previous_end('@parameter.inner', 'textobjects')
-      end)
+      -- ]f/[f function, ]c/[c class, ]a/[a parameter (start); uppercase jumps to the end.
+      -- Note: ]a/[a replace the default argument list navigation (:next/:prev still work).
+      local objects = { f = { '@function.outer', 'function' }, c = { '@class.outer', 'class' }, a = { '@parameter.inner', 'parameter' } }
+      for key, obj in pairs(objects) do
+        local query, name = obj[1], obj[2]
+        for _, dir in ipairs { { ']', 'next', 'Next' }, { '[', 'previous', 'Prev' } } do
+          local lhs, fn, label = dir[1] .. key, dir[2], dir[3]
+          vim.keymap.set({ 'n', 'x', 'o' }, lhs, function()
+            -- Keep the built-in ]c/[c (jump to next/prev change) in diff mode
+            if key == 'c' and vim.wo.diff then
+              vim.cmd.normal { vim.v.count1 .. lhs, bang = true }
+              return
+            end
+            move['goto_' .. fn .. '_start'](query, 'textobjects')
+          end, { desc = label .. ' ' .. name .. ' start' })
+          vim.keymap.set({ 'n', 'x', 'o' }, dir[1] .. key:upper(), function()
+            move['goto_' .. fn .. '_end'](query, 'textobjects')
+          end, { desc = label .. ' ' .. name .. ' end' })
+        end
+      end
     end,
   },
 

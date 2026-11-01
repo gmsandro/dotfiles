@@ -135,20 +135,25 @@ return {
         desc = 'Prev Reference',
         mode = { 'n', 't' },
       },
+      {
+        '<a-n>',
+        function()
+          Snacks.words.jump(vim.v.count1, true)
+        end,
+        desc = 'Next Reference (cycle)',
+      },
+      {
+        '<a-p>',
+        function()
+          Snacks.words.jump(-vim.v.count1, true)
+        end,
+        desc = 'Prev Reference (cycle)',
+      },
     },
     init = function()
       vim.api.nvim_create_autocmd('User', {
         pattern = 'VeryLazy',
         callback = function()
-          -- Setup some globals for debugging (lazy-loaded)
-          _G.dd = function(...)
-            Snacks.debug.inspect(...)
-          end
-          _G.bt = function()
-            Snacks.debug.backtrace()
-          end
-          vim.print = _G.dd -- Override print to use snacks for `:=` command
-
           -- Create some toggle mappings
           Snacks.toggle.option('spell', { name = 'Spelling' }):map '<leader>us'
           Snacks.toggle.option('wrap', { name = 'Wrap' }):map '<leader>uw'

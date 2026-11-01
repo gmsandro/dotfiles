@@ -1,0 +1,10 @@
+return {
+  {
+    'neovim/nvim-lspconfig',
+    opts = { servers = { 'clangd' } }, -- clangd ships with the Xcode command line tools
+  },
+  {
+    'nvim-treesitter/nvim-treesitter',
+    opts = { ensure_installed = { 'c' } },
+  },
+}

@@ -1,24 +1,19 @@
 return {
   {
     'stevearc/oil.nvim',
+    lazy = false, -- so `nvim <dir>` opens oil instead of netrw
+    dependencies = { 'echasnovski/mini.nvim' }, -- mini.icons
     ---@module 'oil'
     ---@type oil.SetupOpts
-    opts = {},
-    dependencies = { 'echasnovski/mini.nvim' }, -- mini.icons
-    config = function()
-      require('oil').setup {
-        columns = {
-          'icon',
-          -- "permissions",
-          -- "size",
-          -- "mtime",
-        },
-        view_options = {
-          show_hidden = true,
-        },
-        skip_confirm_for_simple_edits = true,
-      }
-      vim.keymap.set('n', '-', '<cmd>Oil<cr>', { desc = 'open parent directory' })
-    end,
+    opts = {
+      columns = { 'icon' },
+      view_options = {
+        show_hidden = true,
+      },
+      skip_confirm_for_simple_edits = true,
+    },
+    keys = {
+      { '-', '<cmd>Oil<cr>', desc = 'Open parent directory' },
+    },
   },
 }

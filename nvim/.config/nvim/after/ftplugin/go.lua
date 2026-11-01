@@ -1,5 +1,2 @@
-local set = vim.opt_local
-
-set.expandtab = false
-set.tabstop = 4
-set.shiftwidth = 4
+-- The runtime ftplugin already sets noexpandtab and shiftwidth=0 (follow tabstop)
+vim.opt_local.tabstop = 4

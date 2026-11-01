@@ -3,13 +3,15 @@ return {
   branch = 'harpoon2',
   dependencies = { 'nvim-lua/plenary.nvim' },
   opts = {
-    menu = {
-      width = vim.api.nvim_win_get_width(0) - 4,
-    },
     settings = {
       save_on_toggle = true,
     },
   },
+  -- harpoon2's setup is a method (`harpoon:setup()`), so lazy's default
+  -- `require('harpoon').setup(opts)` would drop the options
+  config = function(_, opts)
+    require('harpoon'):setup(opts)
+  end,
   keys = function()
     local keys = {
       {

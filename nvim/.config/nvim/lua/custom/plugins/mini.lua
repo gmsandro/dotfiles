@@ -22,7 +22,7 @@ return {
       }
 
       require('mini.icons').setup()
-      -- Serve icons to plugins that expect nvim-web-devicons (diffview, bufferline, trouble)
+      -- Serve icons to plugins that expect nvim-web-devicons (bufferline, trouble)
       MiniIcons.mock_nvim_web_devicons()
 
       -- Todo comment and hex color highlighting

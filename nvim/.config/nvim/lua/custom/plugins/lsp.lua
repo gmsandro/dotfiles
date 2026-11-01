@@ -1,7 +1,9 @@
+-- Language files in custom/lang add to two lists (merged via `opts_extend`):
+--   mason.nvim     `ensure_installed`: Mason package names to install (LSPs, formatters)
+--   nvim-lspconfig `servers`:          lspconfig names to enable, e.g. { 'ts_ls' }
+-- Servers not installed via Mason (e.g. clangd) only go into `servers`.
 return {
   {
-    -- Non-LSP tools (formatters, linters). Language files in custom/lang
-    -- add to `ensure_installed`; the lists are merged via `opts_extend`.
     'mason-org/mason.nvim',
     build = ':MasonUpdate',
     opts_extend = { 'ensure_installed' },
@@ -23,19 +25,8 @@ return {
     end,
   },
   {
-    -- LSP servers installed via Mason (lspconfig names), added by language files.
-    -- Installed servers are enabled automatically.
-    'mason-org/mason-lspconfig.nvim',
-    dependencies = { 'mason-org/mason.nvim', 'neovim/nvim-lspconfig' },
-    opts_extend = { 'ensure_installed' },
-    opts = {
-      ensure_installed = {},
-    },
-  },
-  {
-    -- LSP servers installed outside Mason (e.g. clangd from Xcode), added by
-    -- language files to `servers` and enabled here.
     'neovim/nvim-lspconfig',
+    dependencies = { 'mason-org/mason.nvim' }, -- puts Mason's bin dir on PATH first
     opts_extend = { 'servers' },
     opts = {
       servers = {},

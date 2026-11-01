@@ -1,11 +1,11 @@
 return {
   {
     'mason-org/mason.nvim',
-    opts = { ensure_installed = { 'goimports', 'gofumpt' } },
+    opts = { ensure_installed = { 'gopls', 'goimports', 'gofumpt' } },
   },
   {
-    'mason-org/mason-lspconfig.nvim',
-    opts = { ensure_installed = { 'gopls' } },
+    'neovim/nvim-lspconfig',
+    opts = { servers = { 'gopls' } },
   },
   {
     'nvim-treesitter/nvim-treesitter',

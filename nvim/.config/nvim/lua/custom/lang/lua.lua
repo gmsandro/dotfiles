@@ -12,11 +12,11 @@ return {
   },
   {
     'mason-org/mason.nvim',
-    opts = { ensure_installed = { 'stylua' } },
+    opts = { ensure_installed = { 'lua-language-server', 'stylua' } },
   },
   {
-    'mason-org/mason-lspconfig.nvim',
-    opts = { ensure_installed = { 'lua_ls' } },
+    'neovim/nvim-lspconfig',
+    opts = { servers = { 'lua_ls' } },
   },
   {
     'nvim-treesitter/nvim-treesitter',

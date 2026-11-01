@@ -1,7 +1,11 @@
 return {
   {
-    'mason-org/mason-lspconfig.nvim',
-    opts = { ensure_installed = { 'ts_ls' } },
+    'mason-org/mason.nvim',
+    opts = { ensure_installed = { 'typescript-language-server', 'oxlint', 'oxfmt' } },
+  },
+  {
+    'neovim/nvim-lspconfig',
+    opts = { servers = { 'ts_ls', 'oxlint' } },
   },
   {
     'nvim-treesitter/nvim-treesitter',

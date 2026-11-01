@@ -1,7 +1,11 @@
 return {
   {
-    'mason-org/mason-lspconfig.nvim',
+    'mason-org/mason.nvim',
     opts = { ensure_installed = { 'ty', 'ruff' } },
+  },
+  {
+    'neovim/nvim-lspconfig',
+    opts = { servers = { 'ty', 'ruff' } },
   },
   {
     'nvim-treesitter/nvim-treesitter',

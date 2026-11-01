@@ -163,7 +163,7 @@ return {
           Snacks.toggle.option('background', { off = 'light', on = 'dark', name = 'Dark Background' }):map '<leader>ub'
           Snacks.toggle.inlay_hints():map '<leader>uh'
 
-          -- Add virtual text diagnostic toggle
+          -- Inline diagnostics on the cursor line (on by default, see custom/diagnostics.lua)
           Snacks.toggle
             .new({
               name = 'Virtual Text',
@@ -171,7 +171,7 @@ return {
                 return vim.diagnostic.config().virtual_text ~= false
               end,
               set = function(state)
-                vim.diagnostic.config { virtual_text = state }
+                vim.diagnostic.config { virtual_text = state and { current_line = true } or false }
               end,
             })
             :map '<leader>uv'

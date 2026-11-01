@@ -28,16 +28,7 @@ vim.keymap.set('n', '<leader>bo', function()
 end, { desc = 'Delete Other Buffers' })
 vim.keymap.set('n', '<leader>bn', '<cmd>enew<cr>', { desc = 'New Buffer' })
 
--- Diagnostics: open the float after every jump, including the default ]d/[d
-vim.diagnostic.config {
-  jump = {
-    on_jump = function(diagnostic, bufnr)
-      if diagnostic then
-        vim.diagnostic.open_float { bufnr = bufnr, scope = 'cursor', focus = false }
-      end
-    end,
-  },
-}
+-- Diagnostics (config in custom/diagnostics.lua)
 local function diagnostic_jump(count, severity)
   return function()
     vim.diagnostic.jump { count = count, severity = vim.diagnostic.severity[severity] }

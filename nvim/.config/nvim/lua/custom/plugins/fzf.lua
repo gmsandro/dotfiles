@@ -2,30 +2,48 @@ return {
   {
     'ibhagwan/fzf-lua',
     dependencies = { 'echasnovski/mini.nvim' }, -- mini.icons
-    config = function()
-      local fzf = require 'fzf-lua'
-      fzf.register_ui_select()
-      fzf.setup {
-        hls = { border = 'FloatBorder' },
-        winopts = {
-          border = 'single',
-        },
-      }
-
-      vim.keymap.set('n', '<leader><leader>', fzf.files, { desc = 'fzf files' })
-      vim.keymap.set('n', 'grr', fzf.lsp_references, { desc = 'LSP References' })
-      vim.keymap.set('n', '<leader>/', fzf.live_grep, { desc = 'FzF Live Grep' })
-      vim.keymap.set('n', '<leader>fb', fzf.buffers, { desc = '[B]uffer' })
-      vim.keymap.set('n', '<leader>fm', fzf.manpages, { desc = '[M]anpages' })
-      vim.keymap.set('n', '<leader>xt', function()
-        fzf.grep { search = [[\b(TODO|FIX|FIXME|HACK|WARN|PERF|NOTE|TEST)\b]], no_esc = true }
-      end, { desc = 'Todo comments' })
-      vim.keymap.set('n', '<leader>xT', function()
-        fzf.grep { search = [[\b(TODO|FIX|FIXME)\b]], no_esc = true }
-      end, { desc = 'Todo/Fix/Fixme' })
-      vim.keymap.set('n', '<leader>fc', function()
-        fzf.files { cwd = vim.fn.stdpath 'config' }
-      end, { desc = '[C]onfig' })
+    cmd = 'FzfLua',
+    init = function()
+      -- Load fzf-lua on the first vim.ui.select() call (e.g. code actions)
+      ---@diagnostic disable-next-line: duplicate-set-field
+      vim.ui.select = function(...)
+        require('fzf-lua').register_ui_select()
+        return vim.ui.select(...)
+      end
     end,
+    opts = {
+      hls = { border = 'FloatBorder' },
+      winopts = {
+        border = 'single',
+      },
+    },
+    keys = {
+      { '<leader><leader>', '<cmd>FzfLua files<cr>', desc = 'fzf files' },
+      { 'grr', '<cmd>FzfLua lsp_references<cr>', desc = 'LSP References' },
+      { '<leader>/', '<cmd>FzfLua live_grep<cr>', desc = 'FzF Live Grep' },
+      { '<leader>fb', '<cmd>FzfLua buffers<cr>', desc = '[B]uffer' },
+      { '<leader>fm', '<cmd>FzfLua manpages<cr>', desc = '[M]anpages' },
+      {
+        '<leader>xt',
+        function()
+          require('fzf-lua').grep { search = [[\b(TODO|FIX|FIXME|HACK|WARN|PERF|NOTE|TEST)\b]], no_esc = true }
+        end,
+        desc = 'Todo comments',
+      },
+      {
+        '<leader>xT',
+        function()
+          require('fzf-lua').grep { search = [[\b(TODO|FIX|FIXME)\b]], no_esc = true }
+        end,
+        desc = 'Todo/Fix/Fixme',
+      },
+      {
+        '<leader>fc',
+        function()
+          require('fzf-lua').files { cwd = vim.fn.stdpath 'config' }
+        end,
+        desc = '[C]onfig',
+      },
+    },
   },
 }

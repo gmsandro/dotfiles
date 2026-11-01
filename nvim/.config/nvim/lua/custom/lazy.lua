@@ -9,9 +9,12 @@ if not vim.uv.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require('lazy').setup {
+require('lazy').setup({
   { import = 'custom.plugins' },
   -- Per-language setup (LSP, tools, formatters, parsers). Imported after
   -- custom.plugins so the base specs' `opts_extend` applies to these lists.
   { import = 'custom.lang' },
-}
+}, {
+  -- No plugin needs luarocks; don't let lazy install hererocks/luarocks
+  rocks = { enabled = false },
+})

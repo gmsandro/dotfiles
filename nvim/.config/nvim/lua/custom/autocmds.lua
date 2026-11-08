@@ -19,18 +19,54 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
--- Show LSP progress as native progress messages (see :h LspProgress)
+-- Show LSP progress as a single, in-place updated notification per client.
+-- Not via nvim_echo: on the classic message grid every echo is appended, so
+-- chatty servers (rust-analyzer's "Roots Scanned" etc.) overflow the cmdline
+-- and trigger the hit-enter prompt. Snacks.notifier replaces by `id` instead.
+---@type table<integer, {token: lsp.ProgressToken, msg: string, done: boolean}[]>
+local lsp_progress = vim.defaulttable()
+local spinner = { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏' }
 vim.api.nvim_create_autocmd('LspProgress', {
   group = augroup 'lsp_progress',
+  ---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
   callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
     local value = ev.data.params.value
-    vim.api.nvim_echo({ { value.message or 'done' } }, false, {
-      id = 'lsp.' .. ev.data.params.token,
-      kind = 'progress',
-      source = 'vim.lsp',
-      title = value.title,
-      status = value.kind ~= 'end' and 'running' or 'success',
-      percent = value.percentage,
+    if not client or type(value) ~= 'table' then
+      return
+    end
+
+    -- Update (or append) the entry for this progress token
+    local tasks = lsp_progress[client.id]
+    for i = 1, #tasks + 1 do
+      if i == #tasks + 1 or tasks[i].token == ev.data.params.token then
+        tasks[i] = {
+          token = ev.data.params.token,
+          msg = ('[%3d%%] %s%s'):format(
+            value.kind == 'end' and 100 or value.percentage or 100,
+            value.title or '',
+            value.message and (' **%s**'):format(value.message) or ''
+          ),
+          done = value.kind == 'end',
+        }
+        break
+      end
+    end
+
+    -- Render all tasks, then drop the finished ones for the next update
+    local lines = {}
+    lsp_progress[client.id] = vim.tbl_filter(function(t)
+      table.insert(lines, t.msg)
+      return not t.done
+    end, tasks)
+
+    vim.notify(table.concat(lines, '\n'), vim.log.levels.INFO, {
+      id = 'lsp_progress.' .. client.id,
+      title = client.name,
+      opts = function(notif)
+        notif.icon = #lsp_progress[client.id] == 0 and '✓'
+          or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+      end,
     })
   end,
 })

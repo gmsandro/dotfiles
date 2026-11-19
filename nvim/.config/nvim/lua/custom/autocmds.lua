@@ -23,7 +23,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- Not via nvim_echo: on the classic message grid every echo is appended, so
 -- chatty servers (rust-analyzer's "Roots Scanned" etc.) overflow the cmdline
 -- and trigger the hit-enter prompt. Snacks.notifier replaces by `id` instead.
----@type table<integer, {token: lsp.ProgressToken, msg: string, done: boolean}[]>
+---@type table<integer, {token: lsp.ProgressToken, title?: string, msg: string, done: boolean}[]>
 local lsp_progress = vim.defaulttable()
 local spinner = { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏' }
 vim.api.nvim_create_autocmd('LspProgress', {
@@ -36,19 +36,28 @@ vim.api.nvim_create_autocmd('LspProgress', {
       return
     end
 
-    -- Update (or append) the entry for this progress token. `percentage` is
-    -- optional in begin/report, so only show it when the server sends one.
+    -- Update (or append) the entry for this progress token. Only `begin`
+    -- carries the title, so keep it for later reports; `percentage` is
+    -- optional, so only show it when the server sends one.
     local pct = value.kind == 'end' and 100 or value.percentage
     local tasks = lsp_progress[client.id]
     for i = 1, #tasks + 1 do
       if i == #tasks + 1 or tasks[i].token == ev.data.params.token then
+        local title = value.title or (tasks[i] and tasks[i].title)
+        local parts = {}
+        if pct then
+          table.insert(parts, ('[%3d%%]'):format(pct))
+        end
+        if title then
+          table.insert(parts, title)
+        end
+        if value.message then
+          table.insert(parts, ('**%s**'):format(value.message))
+        end
         tasks[i] = {
           token = ev.data.params.token,
-          msg = ('%s%s%s'):format(
-            pct and ('[%3d%%] '):format(pct) or '',
-            value.title or '',
-            value.message and (' **%s**'):format(value.message) or ''
-          ),
+          title = title,
+          msg = table.concat(parts, ' '),
           done = value.kind == 'end',
         }
         break

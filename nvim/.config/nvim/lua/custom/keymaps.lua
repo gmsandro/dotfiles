@@ -22,10 +22,7 @@ vim.keymap.set({ 'n', 'x' }, 'k', "v:count == 0 ? 'gk' : 'k'", { desc = 'Up', ex
 vim.keymap.set('n', 'gco', 'o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>', { desc = 'Add Comment Below' })
 vim.keymap.set('n', 'gcO', 'O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>', { desc = 'Add Comment Above' })
 
--- Buffers
-vim.keymap.set('n', '<leader>bo', function()
-  Snacks.bufdelete.other()
-end, { desc = 'Delete Other Buffers' })
+-- Buffers (<leader>bd/<leader>bo are in plugins/snacks.lua)
 vim.keymap.set('n', '<leader>bn', '<cmd>enew<cr>', { desc = 'New Buffer' })
 
 -- Diagnostics (config in custom/diagnostics.lua)

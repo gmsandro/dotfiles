@@ -12,6 +12,10 @@ return {
     opts = { ensure_installed = { 'javascript', 'typescript', 'tsx', 'jsdoc' } },
   },
   {
+    'windwp/nvim-ts-autotag',
+    ft = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+  },
+  {
     'stevearc/conform.nvim',
     opts = {
       formatters_by_ft = {

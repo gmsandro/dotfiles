@@ -14,6 +14,10 @@ return {
     opts = { ensure_installed = { 'vue', 'css' } },
   },
   {
+    'windwp/nvim-ts-autotag',
+    ft = { 'vue' },
+  },
+  {
     'stevearc/conform.nvim',
     opts = {
       formatters_by_ft = {

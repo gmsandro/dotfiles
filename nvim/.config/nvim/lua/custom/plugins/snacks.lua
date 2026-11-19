@@ -57,6 +57,13 @@ return {
         desc = 'Delete Buffer',
       },
       {
+        '<leader>bo',
+        function()
+          Snacks.bufdelete.other()
+        end,
+        desc = 'Delete Other Buffers',
+      },
+      {
         '<leader>fR',
         function()
           Snacks.rename.rename_file()
@@ -189,22 +196,7 @@ return {
             })
             :map '<leader>uV'
 
-          -- Toggle Indent lines
-          Snacks.toggle
-            .new({
-              name = 'Indent Guides',
-              get = function()
-                return Snacks.indent.enabled
-              end,
-              set = function(state)
-                if state then
-                  Snacks.indent.enable()
-                else
-                  Snacks.indent.disable()
-                end
-              end,
-            })
-            :map '<leader>ui'
+          Snacks.toggle.indent():map '<leader>ui'
         end,
       })
     end,

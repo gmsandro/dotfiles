@@ -19,6 +19,11 @@ vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 vim.opt.inccommand = 'split'
 vim.opt.cursorline = true
 vim.opt.scrolloff = 10
+vim.opt.smoothscroll = true -- scroll wrapped lines by screen line, not by buffer line
+vim.opt.confirm = true -- ask to save instead of failing :q / :e on unsaved changes
+-- Default border for floating windows without their own (LSP hover, signature
+-- help, diagnostic float, blink.cmp menu/docs); matches fzf-lua's border
+vim.opt.winborder = 'single'
 
 -- Default indentation; filetypes that differ set it in after/ftplugin
 -- (Python, Rust and Go use their runtime ftplugin's recommended style)

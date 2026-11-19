@@ -1,81 +1,164 @@
 #!/usr/bin/env bash
+#
+# tms - fuzzy tmux session switcher
+#
+#   tms              pick a session with fzf
+#   tms <name> [dir] switch to <name>, create it (in dir or $PWD) if missing
+#
+# fzf keys:
+#   enter   switch to selection (or create a session named like the query
+#           when nothing matches)
+#   ctrl-o  create a session named exactly like the query
+#   ctrl-x  kill the highlighted session (never the one you're in)
+#   esc     abort
+#
+# Works inside tmux (switch-client) and outside (attach-session).
+# Compatible with macOS' bash 3.2.
 
 set -euo pipefail
 
 default_session="${TMUX_DEFAULT_SESSION:-main}"
 tab=$'\t'
-current_session_id=""
 
-if ! command -v tmux >/dev/null 2>&1; then
-  echo "error: tmux is not installed" >&2
+die() {
+  printf 'tms: %s\n' "$*" >&2
   exit 1
-fi
+}
 
-if ! command -v fzf >/dev/null 2>&1; then
-  echo "error: fzf is not installed" >&2
-  exit 1
-fi
+current_session() {
+  if [[ -n ${TMUX:-} ]]; then
+    tmux display-message -p '#{session_id}' 2>/dev/null || true
+  fi
+}
 
-if ! tmux start-server >/dev/null 2>&1; then
-  echo "error: could not start tmux server" >&2
-  exit 1
-fi
+switch_to() {
+  if [[ -n ${TMUX:-} ]]; then
+    exec tmux switch-client -t "$1"
+  fi
+  exec tmux attach-session -t "$1"
+}
 
-if [ -n "${TMUX:-}" ]; then
-  current_session_id="$(tmux display-message -p '#{session_id}' 2>/dev/null || true)"
-fi
+create_and_switch() {
+  # tmux silently replaces '.' and ':' in session names, which would make the
+  # name we switch to differ from the one tmux created - do it ourselves.
+  local name="${1//[.:]/_}"
+  local dir="${2:-$PWD}"
+  [[ -n $name ]] || name="$default_session"
 
-sessions="$(
+  if ! tmux has-session -t "=$name" 2>/dev/null; then
+    tmux new-session -d -s "$name" -c "$dir"
+  fi
+  switch_to "=$name"
+}
+
+# One line per session: "<session_id>\t<display text>".
+# Most recently used first; the session we're in goes last, so a plain
+# Enter jumps to the previous session.
+#
+# Never put control characters (tabs!) into a tmux -F format: when the client
+# doesn't consider itself UTF-8 capable (outside tmux with LANG unset/C),
+# tmux replaces them with '_'. The tab is added by printf below instead.
+list_sessions() {
+  local cur
+  cur="$(current_session)"
+
   tmux list-sessions \
-    -F "#{session_id}${tab}#{session_name}${tab}#{session_windows}${tab}#{?session_attached,attached,detached}" \
-    2>/dev/null || true
-)"
+    -F '#{?session_last_attached,#{session_last_attached},0} #{session_id} #{session_windows} #{session_attached} #{session_name}' \
+    2>/dev/null | sort -rn | {
+    local id windows attached name marker label state row current_row=""
+    while read -r _ id windows attached name; do
+      marker=" "
+      label="windows"
+      state=""
+      [[ $windows != 1 ]] || label="window"
+      [[ $attached == 0 ]] || state="(attached)"
+      [[ $id != "$cur" ]] || marker="*"
 
-if [[ -z "$sessions" ]]; then
-  if [ -n "${TMUX:-}" ]; then
-    exec tmux new-session -d -s "$default_session" \; switch-client -t "$default_session"
-  else
-    exec tmux new-session -s "$default_session"
+      printf -v row '%s\t%s %-24s %3s %-7s %s' "$id" "$marker" "$name" "$windows" "$label" "$state"
+      if [[ $id == "$cur" ]]; then
+        current_row="$row"
+      else
+        printf '%s\n' "$row"
+      fi
+    done
+    [[ -z $current_row ]] || printf '%s\n' "$current_row"
+  }
+}
+
+kill_session() {
+  # Killing the session fzf runs in would take fzf (and this script) with it.
+  [[ $1 != "$(current_session)" ]] || return 0
+  tmux kill-session -t "$1" 2>/dev/null || true
+}
+
+pick() {
+  local sessions self out rc=0 query selection
+
+  sessions="$(list_sessions)"
+  if [[ -z $sessions ]]; then
+    create_and_switch "$default_session"
   fi
-fi
 
-rows=""
-while IFS=$'\t' read -r session_id session_name window_count attached_state; do
-  [[ -n "$session_id" ]] || continue
+  printf -v self '%q' "$0"
 
-  marker=" "
-  if [[ "$session_id" == "$current_session_id" ]]; then
-    marker="*"
+  out="$(
+    printf '%s\n' "$sessions" | fzf \
+      --print-query \
+      --delimiter="$tab" \
+      --with-nth=2.. \
+      --prompt='session> ' \
+      --header='enter: switch · ctrl-o: create from query · ctrl-x: kill' \
+      --height=40% \
+      --layout=reverse \
+      --border \
+      --preview='tmux list-windows -t {1} -F "#{?window_active,*, } #{window_index}: #{window_name}  #{pane_current_path}"' \
+      --preview-window=down,40%,border-top \
+      --bind="ctrl-o:print-query" \
+      --bind="ctrl-x:execute-silent($self --kill {1})+reload($self --list)"
+  )" || rc=$?
+
+  # 0 = selection (or ctrl-o), 1 = no match (only the query is printed),
+  # 130 = aborted
+  case $rc in
+    0 | 1) ;;
+    *) exit 0 ;;
+  esac
+
+  query="${out%%$'\n'*}"
+  selection=""
+  if [[ $out == *$'\n'* ]]; then
+    selection="${out#*$'\n'}"
   fi
 
-  window_label="windows"
-  if [[ "$window_count" == "1" ]]; then
-    window_label="window"
+  if [[ -n $selection ]]; then
+    switch_to "${selection%%"$tab"*}"
   fi
+  if [[ -n $query ]]; then
+    create_and_switch "$query"
+  fi
+}
 
-  printf -v row '%s %-24s %3s %-7s %s\t%s' "$marker" "$session_name" "$window_count" "$window_label" "$attached_state" "$session_id"
-  rows+="${row}"$'\n'
-done <<< "$sessions"
+command -v tmux >/dev/null 2>&1 || die "tmux is not installed"
 
-choice="$(
-  printf '%s' "$rows" | fzf \
-    --prompt='tmux sessions> ' \
-    --height=40% \
-    --layout=reverse \
-    --border \
-    --delimiter="$tab" \
-    --with-nth=1 \
-    --preview='tmux list-windows -t {2} -F "#{?window_active,*, } #{window_index}: #{window_name} #{window_flags}"' \
-    --preview-window=down,40%,border-top \
-    --exit-0
-)" || exit 0
-
-[[ -n "$choice" ]] || exit 0
-
-session="${choice##*$tab}"
-
-if [ -n "${TMUX:-}" ]; then
-  exec tmux switch-client -t "$session"
-else
-  exec tmux attach-session -t "$session"
-fi
+case "${1:-}" in
+  --list)
+    list_sessions
+    ;;
+  --kill)
+    [[ -n ${2:-} ]] || die "--kill needs a session"
+    kill_session "$2"
+    ;;
+  -h | --help)
+    sed -n '3,16s/^# \{0,1\}//p' "$0"
+    ;;
+  "")
+    command -v fzf >/dev/null 2>&1 || die "fzf is not installed"
+    pick
+    ;;
+  -*)
+    die "unknown option: $1 (see tms --help)"
+    ;;
+  *)
+    create_and_switch "$1" "${2:-}"
+    ;;
+esac

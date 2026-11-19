@@ -36,14 +36,16 @@ vim.api.nvim_create_autocmd('LspProgress', {
       return
     end
 
-    -- Update (or append) the entry for this progress token
+    -- Update (or append) the entry for this progress token. `percentage` is
+    -- optional in begin/report, so only show it when the server sends one.
+    local pct = value.kind == 'end' and 100 or value.percentage
     local tasks = lsp_progress[client.id]
     for i = 1, #tasks + 1 do
       if i == #tasks + 1 or tasks[i].token == ev.data.params.token then
         tasks[i] = {
           token = ev.data.params.token,
-          msg = ('[%3d%%] %s%s'):format(
-            value.kind == 'end' and 100 or value.percentage or 100,
+          msg = ('%s%s%s'):format(
+            pct and ('[%3d%%] '):format(pct) or '',
             value.title or '',
             value.message and (' **%s**'):format(value.message) or ''
           ),

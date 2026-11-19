@@ -13,19 +13,30 @@ return {
         'markdown',
         'printf',
         'html',
+        'json',
       },
     },
     config = function(_, opts)
       require('nvim-treesitter').install(opts.ensure_installed)
 
-      -- Start treesitter highlighting for every filetype with a parser
+      -- Filetypes that keep their runtime indentexpr over treesitter's
+      -- (experimental) one; C isn't formatted on save, and cindent is solid
+      local runtime_indent = { c = true, cpp = true }
+
+      -- Start treesitter highlighting for every filetype with a parser, plus
+      -- indentation where the parser ships indent queries
       vim.api.nvim_create_autocmd('FileType', {
         group = vim.api.nvim_create_augroup('custom_treesitter', { clear = true }),
         callback = function(args)
-          if vim.bo[args.buf].buftype ~= '' then
+          local buf = args.buf
+          if vim.bo[buf].buftype ~= '' or not pcall(vim.treesitter.start, buf) then
             return
           end
-          pcall(vim.treesitter.start, args.buf)
+          local ft = vim.bo[buf].filetype
+          local lang = vim.treesitter.language.get_lang(ft)
+          if not runtime_indent[ft] and lang and vim.treesitter.query.get(lang, 'indents') then
+            vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
         end,
       })
     end,
@@ -70,7 +81,8 @@ return {
 
   {
     'windwp/nvim-ts-autotag',
-    ft = { 'html', 'xml', 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+    -- Language files in custom/lang add their filetypes (lazy.nvim merges `ft`)
+    ft = { 'html', 'xml' },
     opts = {},
   },
 }

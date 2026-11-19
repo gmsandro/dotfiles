@@ -1,6 +1,6 @@
 return {
   {
-    'echasnovski/mini.nvim',
+    'nvim-mini/mini.nvim',
     config = function()
       -- Around/inside textobjects, e.g. va), yinq, ci'
       -- next/last variants moved off an/in, which 0.12 uses for incremental selection (:h v_an)

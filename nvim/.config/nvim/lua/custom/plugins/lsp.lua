@@ -14,11 +14,24 @@ return {
       require('mason').setup(opts)
 
       local registry = require 'mason-registry'
+      -- is_installed() only checks the install dir, so the common case (all
+      -- installed) needs no registry at all
+      local missing = vim.tbl_filter(function(name)
+        return not registry.is_installed(name)
+      end, opts.ensure_installed)
+      if #missing == 0 then
+        return
+      end
+
       registry.refresh(function()
-        for _, name in ipairs(opts.ensure_installed) do
-          local pkg = registry.get_package(name)
-          if not pkg:is_installed() and not pkg:is_installing() then
-            pkg:install()
+        for _, name in ipairs(missing) do
+          if not registry.has_package(name) then
+            vim.notify(('Mason: unknown package %q'):format(name), vim.log.levels.WARN)
+          else
+            local pkg = registry.get_package(name)
+            if not pkg:is_installing() then
+              pkg:install()
+            end
           end
         end
       end)

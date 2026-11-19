@@ -1,7 +1,7 @@
 return {
   {
     'ibhagwan/fzf-lua',
-    dependencies = { 'echasnovski/mini.nvim' }, -- mini.icons
+    dependencies = { 'nvim-mini/mini.nvim' }, -- mini.icons
     cmd = 'FzfLua',
     init = function()
       -- Load fzf-lua on the first vim.ui.select() call (e.g. code actions)
